@@ -1,1 +1,3 @@
-console.log('Привет мир')
+import { Router } from "./router/router";
+
+Router()
