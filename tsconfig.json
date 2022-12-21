@@ -1,16 +1,16 @@
 {
-    "compilerOptions": {
-      "outDir": "./built",
-      "allowJs": true,
-      "sourceMap": true,
-      "target": "es6",
-      "noImplicitAny": true,
-      "strictNullChecks": true,
-      "strict": true
-    },
-    "include": ["./src/**/*"],
-    "exclude": [
-      "node_modules"
-    ],
+  "compilerOptions": {
+    "outDir": "./built",
+    "allowJs": true,
+    "sourceMap": true,
+    "target": "es6",
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strict": true
+  },
+  "include": ["./src/**/*"],
+  "exclude": [
+    "node_modules"
+  ],
 
 }
