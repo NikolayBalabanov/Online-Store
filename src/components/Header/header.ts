@@ -56,6 +56,7 @@ export class Header {
         cartWrap.classList.add('header__cart')
         cartCnt.classList.add('header__cart-cnt')
 
+        cartWrap.href = '/cart'
         cartWrap.append(cartCnt)
         cartCnt.textContent = '0'
 

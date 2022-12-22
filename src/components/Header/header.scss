@@ -28,6 +28,7 @@
         line-height: 100%;
         color: var(--color-orange);
         text-shadow: 0 0 10px rgb(88 68 68), 0 0 5px red, 0 0 10px red, 0 0 15px red;
+        pointer-events: none;
     }
 
     &__brand {
@@ -35,6 +36,7 @@
         color: var(--color-orange);
         text-shadow: 0 0 10px rgb(184 24 24), 0 0 20px red, 0 0 30px red, 0 0 40px red;
         font-size: 160%;
+        pointer-events: none;
     }
 
     &__total-price {
@@ -53,6 +55,7 @@
         justify-content: center;
         width: 70px;
         height: 90px;
+        color: var(--color-orange);
         background-image: url(../../assets/images/cart.png);
         background-size: contain;
         background-repeat: no-repeat;
@@ -70,5 +73,6 @@
         text-align: center;
         vertical-align: middle;
         background-color: var(--color-black);
+        pointer-events: none;
     }
 }
