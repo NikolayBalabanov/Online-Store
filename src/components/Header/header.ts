@@ -61,9 +61,11 @@ export class Header {
 
         return cartWrap
     }
-    public update() {
+    public update(cnt: string = '0', price: string = '0') {
         if (this.price && this.cartCnt) {
             console.log('Обновить счетчик карзины и сумму карзины')
+            this.price.textContent = `€${price}.00`
+            this.cartCnt.textContent = `${cnt}`
         } else {
             console.log('Невозможно обновить счетчик карзины и сумму карзины')
         }
