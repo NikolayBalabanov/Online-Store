@@ -1,0 +1,34 @@
+:root {
+    --color-black: #181a1c;
+    --color-orange: orange;
+    --color-wheat: wheat;
+}
+
+html {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+  
+*,
+*::before,
+*::after {
+    -webkit-box-sizing: inherit;
+    box-sizing: inherit;
+}
+
+.container {
+    margin: 0 auto;
+    padding: 0px 15px;
+    max-width: 1370px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.list-reset {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
