@@ -9,9 +9,15 @@ const enum KnownRoutes {
 export function Router() {
     // create document click that watches the nav links only
     document.addEventListener('click', (e: MouseEvent) => {
-        const target = e.target as Element
+        let target = e.target as HTMLLinkElement
         if (!target.matches('a')) {
             return;
+        }
+        if (target.matches('a')) {
+            // check origin link, if YES we use routing, else use default
+            if (!target.href.match(window.location.origin)) {
+                return
+            }
         }
         e.preventDefault();
         urlRoute();

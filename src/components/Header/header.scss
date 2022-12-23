@@ -18,6 +18,14 @@
         display: flex;
         align-items: center;
         cursor: pointer;
+        transition: text-shadow 0.15s ease-in-out;
+
+
+        &:focus,
+        &:hover {
+            transition: text-shadow 0.15s ease-in-out;
+            text-shadow: 0 0 10px rgb(88 68 68), 0 0 5px red, 0 0 10px red, 0 0 15px red;
+        }
     }
 
     &__logo {
@@ -27,14 +35,12 @@
         font-size: 400%;
         line-height: 100%;
         color: var(--color-orange);
-        text-shadow: 0 0 10px rgb(88 68 68), 0 0 5px red, 0 0 10px red, 0 0 15px red;
         pointer-events: none;
     }
 
     &__brand {
         margin-left: 1rem;
         color: var(--color-orange);
-        text-shadow: 0 0 10px rgb(184 24 24), 0 0 20px red, 0 0 30px red, 0 0 40px red;
         font-size: 160%;
         pointer-events: none;
     }
@@ -61,6 +67,13 @@
         background-repeat: no-repeat;
         background-position: center;
         cursor: pointer;
+        transition: transform 0.15s ease-in-out;
+
+        &:focus,
+        &:hover {
+            transform: scale(0.9);
+            transition: transform 0.15s ease-in-out;
+        }
     }
 
     &__cart-cnt {
