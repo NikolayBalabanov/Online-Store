@@ -55,8 +55,8 @@ export class Main {
         const copyURL = document.createElement('button')
 
         controlsWrap.classList.add('filters__controls')
-        resetFilters.classList.add('main__btn')
-        copyURL.classList.add('main__btn')
+        resetFilters.classList.add('main__btn', 'filters__btn')
+        copyURL.classList.add('main__btn', 'filters__btn')
 
         controlsWrap.append(resetFilters, copyURL)
         resetFilters.href = '/'
@@ -192,14 +192,14 @@ export class Main {
         searchInput.classList.add('controls__search')
 
         viewSwitchers.classList.add('controls__switchers')
-        viewSmall.classList.add('controls__view')
-        viewBig.classList.add('controls__view', 'controls__view--active')
+        viewSmall.classList.add('controls__view', 'controls__view-small')
+        viewBig.classList.add('controls__view', 'controls__view-big', 'controls__view--active')
 
         controlsWrap.append(sortWrap, found, searchBar, viewSwitchers)
 
         sortWrap.append(sortSelect)
         sortSelect.append(optionPlaceholder, optionPriceASC, optionPriceDESC, optionRatingASC, optionRatingDESC, optionDiscountASC, optionDiscountDESC)
-        optionPlaceholder.textContent = 'Sort options'
+        optionPlaceholder.textContent = 'Sort options:'
         optionPlaceholder.selected = true
         optionPlaceholder.disabled = true
         optionPriceASC.value = 'price-ASC'
@@ -307,8 +307,11 @@ export class Main {
     private changeSize() {
         // принимает false/true и устанавливает/снимает класс размера у this.cards
     }
-    private renderCards(newData: IProduct[]) {
+    private renderCards(newData: IProduct[], isBig: boolean) {
+        let cartArr = getCartArr()
         newData.forEach((el: IProduct) => {
+            const isExist = (element: ICartItem) => element.id === el.id
+            let isInCart = cartArr.find(isExist)
             const card = document.createElement('div')
             const cardWrap = document.createElement('div')
             const cardTextContent = document.createElement('div')
@@ -331,6 +334,8 @@ export class Main {
             const cardDetails = document.createElement('a')
 
             card.classList.add('card')
+            isBig ? card.classList.add('card-big') : ''
+            isInCart ? card.classList.add('in-cart') : '' 
             cardWrap.classList.add('card__wrap')
             cardTextContent.classList.add('card__text-content')
             cardTitle.classList.add('card__title')
@@ -342,8 +347,8 @@ export class Main {
             cardRating.classList.add('card__text')
             cardStock.classList.add('card__text')
             cardControls.classList.add('card__btns')
-            cardCartBtn.classList.add('card__add')
-            cardDetails.classList.add('card__details')
+            cardCartBtn.classList.add('card__add', 'main__btn')
+            cardDetails.classList.add('card__details', 'main__btn')
             cardCategoryAttr.classList.add('card__attrebute')
             cardBrandAttr.classList.add('card__attrebute')
             cardPriceAttr.classList.add('card__attrebute')
@@ -357,40 +362,39 @@ export class Main {
             cardTextContent.append(cardTitle, cardInfo)
             cardTitle.textContent = el.title
             cardInfo.append(cardCategory, cardBrand, cardPrice, cardDiscount, cardRating, cardStock)
-            cardCategory.append(cardCategoryAttr)
-            cardBrand.append(cardBrandAttr)
-            cardPrice.append(cardPriceAttr)
-            cardDiscount.append(cardDiscountAttr)
-            cardRating.append(cardRatingAttr)
-            cardStock.append(cardStockAttr)
             cardCategory.textContent = el.category
             cardBrand.textContent = el.brand
             cardPrice.textContent = `€${el.price.toString()}.00`
             cardDiscount.textContent = `${el.discountPercentage.toString()}%`
             cardRating.textContent = el.rating.toString()
             cardStock.textContent = el.stock.toString()
-            cardControls.append(cardCartBtn, cardDetails)
-            cardCategoryAttr.textContent = 'Category:'
-            cardBrandAttr.textContent = 'Brand:'
-            cardPriceAttr.textContent = 'Price:'
-            cardDiscountAttr.textContent = 'Discount:'
-            cardRatingAttr.textContent = 'Rating:'
-            cardStockAttr.textContent = 'Stock:'
+            cardCategory.prepend(cardCategoryAttr)
+            cardBrand.prepend(cardBrandAttr)
+            cardPrice.prepend(cardPriceAttr)
+            cardDiscount.prepend(cardDiscountAttr)
+            cardRating.prepend(cardRatingAttr)
+            cardStock.prepend(cardStockAttr)
+            cardControls.prepend(cardCartBtn, cardDetails)
+            cardCategoryAttr.textContent = 'Category: '
+            cardBrandAttr.textContent = 'Brand: '
+            cardPriceAttr.textContent = 'Price: '
+            cardDiscountAttr.textContent = 'Discount: '
+            cardRatingAttr.textContent = 'Rating: '
+            cardStockAttr.textContent = 'Stock: '
             cardDetails.textContent = 'DETAILS'
             cardDetails.href = `/product-details/${el.id}`
-            const isExist = (element: ICartItem) => element.id === el.id
-            const cartArr = getCartArr()
-            cardCartBtn.textContent = cartArr.find(isExist) ? 'DROP FROM CART' : 'ADD TO CART'
-            // add/remove class cardCartBtn
+            
+            cardCartBtn.textContent = isInCart ? 'DROP FROM CART' : 'ADD TO CART'
             cardCartBtn.addEventListener('click', () => {
-                let cartArr = getCartArr()
+                isInCart = cartArr.find(isExist)
                 if (cartArr.length > 0) {
-                    if (cartArr.find(isExist)) {
+                    if (isInCart) {
                         cartArr = cartArr.filter((element) => element.id !== el.id)
                         localStorage.setItem('cart', JSON.stringify(cartArr))
                         cardCartBtn.textContent = 'ADD TO CART'
-                        // remove class cardCartBtn
+                        card.classList.remove('in-cart')
                         header.update()
+                        console.log('что-то пошло не так')
                         return
                     }
                     cartArr.push({ id: el.id, price: el.price })
@@ -400,6 +404,7 @@ export class Main {
                     localStorage.setItem('cart', JSON.stringify(cartArr))
                 }
                 cardCartBtn.textContent = 'DROP FROM CART'
+                card.classList.add('in-cart')
                     // add class cardCartBtn
                 header.update()
             })
@@ -413,7 +418,7 @@ export class Main {
         console.log(data)
         if (data) {
             let  newData = data.slice()
-            this.renderCards(newData)
+            this.renderCards(newData, true)
         }
     }
 }

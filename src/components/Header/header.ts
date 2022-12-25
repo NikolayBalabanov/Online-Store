@@ -73,7 +73,7 @@ export class Header {
             this.cartCnt.textContent = `${cnt}`
         } else {
             console.log('Невозможно обновить счетчик карзины и сумму карзины')
-            if (this.price && this.cartCnt && cartArr.length > 0) {
+            if (this.price && this.cartCnt && cartArr.length === 0) {
                 this.price.textContent = '€0.00'
                 this.cartCnt.textContent = '0'
             } 
