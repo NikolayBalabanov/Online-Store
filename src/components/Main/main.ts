@@ -2,9 +2,52 @@ import { header, IProduct } from "../../index"
 import { getCartArr } from "../../utils/getCartArr"
 import './main.scss'
 
+enum QueryOptions {
+    category = 'category',
+    brand = 'brand',
+    price = 'price',
+    stock = 'stock',
+    sort = 'sort',
+    search = 'search',
+    big = 'big'
+}
+
+enum Sorts {
+    priseUp = 'price-ASC',
+    priseDwn = 'price-DESC',
+    ratingUp = 'rating-ASC',
+    ratingDwn = 'rating-DESC',
+    discountUp = 'discount-ASC',
+    discountDwn = 'discount-DESC',
+}
+
+enum FiltersFields {
+    'category' = 'category',
+    'brand' = 'brand'
+}
+
 export interface ICartItem {
     id: number
     price: number
+}
+
+interface ICategory {
+    [n: string]: TCategoryCnt
+}
+
+type IQueryObj = {
+    [QueryOptions.big]?: string
+    [QueryOptions.brand]?: string[]
+    [QueryOptions.category]?: string[]
+    [QueryOptions.price]?: number[]
+    [QueryOptions.search]?: string
+    [QueryOptions.stock]?: number[]
+    [QueryOptions.sort]?: string
+}
+
+type TCategoryCnt = {
+    available: number
+    total: number
 }
 
 export class Main {
@@ -17,7 +60,19 @@ export class Main {
     stockFinish: HTMLInputElement | undefined
     mainContainer: HTMLDivElement | undefined
     cardsContainer: HTMLDivElement | undefined
-    constructor() {}
+    parentData: IProduct[] | null
+    curData: IProduct[] | null
+    categoryFilterList: HTMLUListElement | undefined
+    brandFilterList: HTMLUListElement | undefined
+    priceSliderList: HTMLDivElement | undefined
+    stockSliderList: HTMLDivElement | undefined
+    sortSelect: HTMLSelectElement | undefined
+    viewSmall: HTMLDivElement | undefined
+    viewBig: HTMLDivElement | undefined
+    constructor() {
+        this.parentData = null
+        this.curData = null
+    }
 
     public createMainContainer() {
         const main = document.createElement('main')
@@ -44,8 +99,12 @@ export class Main {
         const brandFilterWrap = this.createFilterWrap('brand')
         const priceSliderWrap = this.createPriceSliderWrap()
         const stockSliderWrap = this.createStockSliderWrap()
+        this.categoryFilterList = categoryFilterWrap.list
+        this.brandFilterList = brandFilterWrap.list
+        this.priceSliderList = priceSliderWrap
+        this.stockSliderList = stockSliderWrap
 
-        filtersWrap.append(filtersControls, categoryFilterWrap, brandFilterWrap, priceSliderWrap, stockSliderWrap)
+        filtersWrap.append(filtersControls, categoryFilterWrap.wrap, brandFilterWrap.wrap, priceSliderWrap, stockSliderWrap)
 
         return filtersWrap
     }
@@ -84,7 +143,7 @@ export class Main {
         wrap.append(title, list)
         title.textContent = `${filter[0].toUpperCase() + filter.slice(1)}`
 
-        return wrap
+        return {wrap, list}
     }
     private createPriceSliderWrap() {
         const wrap = document.createElement('div')
@@ -193,7 +252,9 @@ export class Main {
 
         viewSwitchers.classList.add('controls__switchers')
         viewSmall.classList.add('controls__view', 'controls__view-small')
-        viewBig.classList.add('controls__view', 'controls__view-big', 'controls__view--active')
+        viewBig.classList.add('controls__view', 'controls__view-big')
+        this.viewSmall = viewSmall
+        this.viewBig = viewBig
 
         controlsWrap.append(sortWrap, found, searchBar, viewSwitchers)
 
@@ -232,18 +293,11 @@ export class Main {
             viewBig.append(decorItem)
         }
 
+        this.sortSelect = sortSelect
+
         sortSelect.addEventListener('change', () => {
-            // запустить функцию перерисовки контента продуктов
-            // с учётом обновления URL
-            // с учётом состояния URL
-            // Обновляются:
-            // карточки(их порядок)
-            // состояние селекта
-            // состояние всех элемонтов фильтрации
-            // состояние кнопок размера контента
-            // состояние корзины и тоталпрайса
-            // Где будет эта функция и как она до всего достучится.
-            // appUpdate()
+            console.log(sortSelect.value)
+            this.updateURL(sortSelect.value, 'sort')
         })
 
         searchInput.addEventListener('input', () => {
@@ -255,11 +309,17 @@ export class Main {
             // снять подсветку
             // подсветить кликнутую кнопку
             // повесить класс на карочки
+            viewBig.classList.remove('controls__view--active')
+            viewSmall.classList.add('controls__view--active')
+            this.updateURL('false', 'big')
         })
         viewBig.addEventListener('click', () => {
             // снять подсветку
             // подсветить кликнутую кнопку
             // снять класс на карочках
+            viewSmall.classList.remove('controls__view--active')
+            viewBig.classList.add('controls__view--active')
+            this.updateURL('true', 'big')
         })
 
         return controlsWrap
@@ -276,15 +336,61 @@ export class Main {
         notFoundWrap.textContent = 'No products found 😏'
         return notFoundWrap
     }
-    private fillCategoryesFilter() {
-        // получает массив объектов [
-        // {category: string. current: string, stock: string, checked: boolean}
-        // ]
-    }
-    private fillBrandsFilters() {
-        // получает массив объектов [
-        // {brand: string, current: string, stock: string, checked: boolean}
-        // ]
+    private fillFilter(selector: FiltersFields, checked: string[] = []) {
+        // получает массив строк элементов которые чекнуты
+        const filterItems: HTMLDivElement[] = []
+        if (this.parentData && this.curData) {
+            const selectors: ICategory = {}
+            this.parentData.forEach(el => {
+                if (selectors[el[selector]]) {
+                    selectors[el[selector]].total += 1
+                } else {
+                    selectors[el[selector]] = { available: 0, total: 1 }
+                }
+            })
+            this.curData.forEach(el => {
+                if (selectors[el[selector]]) {
+                    selectors[el[selector]].available += 1
+                }
+            })
+            console.log('selectors', selectors)
+            Object.entries(selectors).forEach(([elem, elemObj]) => {
+                const checkWrap = document.createElement('div')
+                const checkbox = document.createElement('input')
+                const label = document.createElement('label')
+                const text = document.createElement('span')
+
+                checkWrap.classList.add('checkbox-item')
+                if (elemObj.available > 0 && checked.length === 0) checkWrap.classList.add('checkbox-item--active')
+                if (elemObj.available > 0 && checked.includes(elem)) checkWrap.classList.add('checkbox-item--active')
+                else checkWrap.classList.add('checkbox-item--inactive')
+                checkbox.classList.add('checkbox-item__checkbox')
+                if (checked?.includes(elem.toLowerCase())) checkbox.checked = true
+                label.classList.add('checkbox-item__label')
+                text.classList.add('checkbox-item__text')
+
+                checkWrap.append(checkbox, label, text)
+                checkbox.type = 'checkbox'
+                checkbox.id = `${elem}`
+                label.textContent = elem
+                label.htmlFor = elem
+                text.textContent = `(${elemObj.available.toString()}/${elemObj.total.toString()})`
+                filterItems.push(checkWrap)
+
+                checkbox.addEventListener('click', (e) => {
+                    if (checked.includes(elem.toLowerCase())) {
+                        checked = checked.filter(el => el !== elem.toLowerCase())
+                    } else {
+                        checked.push(elem.toLowerCase())
+                    }
+                    
+                    let selectorItemsStr = checked.join('↕')
+                    this.updateURL(selectorItemsStr, selector)
+                })
+            })
+           
+        }
+        return filterItems
     }
     private setPriceSlider() {
         // хз
@@ -295,20 +401,25 @@ export class Main {
     private createCard() {
         // получает объект { isInCart: boolean, isBig: boolean, data: ICardData }
     }
-    private setSort() {
-        // получает значение сортировки и устанавливает ее
-    }
     private setFound() {
         // получает значение количества товаров и устанавливает его в this.found
     }
     private setSearch() {
         // получает значение сортировки и устанавливает его в поле сортировки
     }
-    private changeSize() {
-        // принимает false/true и устанавливает/снимает класс размера у this.cards
+    private updateURL(queryStr: string, selector: string) {
+        const url = new URL(window.location.href);
+        if (queryStr.length > 0) {
+            url.searchParams.set(selector, queryStr);
+        } else {
+            url.searchParams.delete(selector);
+        }
+        window.history.pushState({}, '', url);
+        this.update(this.parentData)
     }
     private renderCards(newData: IProduct[], isBig: boolean) {
         let cartArr = getCartArr()
+        if (this.cardsContainer) this.cardsContainer.innerHTML = ''
         newData.forEach((el: IProduct) => {
             const isExist = (element: ICartItem) => element.id === el.id
             let isInCart = cartArr.find(isExist)
@@ -394,7 +505,6 @@ export class Main {
                         cardCartBtn.textContent = 'ADD TO CART'
                         card.classList.remove('in-cart')
                         header.update()
-                        console.log('что-то пошло не так')
                         return
                     }
                     cartArr.push({ id: el.id, price: el.price })
@@ -412,13 +522,125 @@ export class Main {
             this.cardsContainer?.append(card)
         });
     }
+    private urlParse() {
+        const queryObj: IQueryObj = {}
+        const url = new URLSearchParams(window.location.search);
+        for (const [key, value] of url) {
+            switch(key) {
+                case QueryOptions.big:
+                    queryObj[QueryOptions.big] = value
+                    break
+                case QueryOptions.brand:
+                    queryObj[QueryOptions.brand] = value.split('↕')
+                    break
+                case QueryOptions.category:
+                    queryObj[QueryOptions.category] = value.split('↕')
+                    break
+                case QueryOptions.price:
+                    queryObj[QueryOptions.price] = value.split('↕').map(el => Number(el))
+                    break
+                case QueryOptions.search:
+                    queryObj[QueryOptions.search] = value
+                    break
+                case QueryOptions.stock:
+                    queryObj[QueryOptions.stock] = value.split('↕').map(el => Number(el))
+                    break
+                case QueryOptions.sort:
+                    queryObj[QueryOptions.sort] = value
+                    break
+                default:
+                    break
+            }
+        }
+        // console.log('queryObj', Object.keys(queryObj))
+        return queryObj
+    }
+    private sortData(str: string) {
+        switch(str) {
+            case Sorts.priseUp:
+                this.curData?.sort((a, b) => a.price - b.price)
+                this.sortSelect? this.sortSelect.value = Sorts.priseUp : ''
+                break
+            case Sorts.priseDwn:
+                this.curData?.sort((a, b) => b.price - a.price)
+                this.sortSelect? this.sortSelect.value = Sorts.priseDwn : ''
+                break
+            case Sorts.ratingUp:
+                this.curData?.sort((a, b) => a.rating - b.rating)
+                this.sortSelect? this.sortSelect.value = Sorts.ratingUp : ''
+                break
+            case Sorts.ratingDwn:
+                this.curData?.sort((a, b) => b.rating - a.rating)
+                this.sortSelect? this.sortSelect.value = Sorts.ratingDwn : ''
+                break
+            case Sorts.discountUp:
+                this.curData?.sort((a, b) => a.discountPercentage - b.discountPercentage)
+                this.sortSelect? this.sortSelect.value = Sorts.discountUp : ''
+                break
+            case Sorts.discountDwn:
+                this.curData?.sort((a, b) => b.discountPercentage - a.discountPercentage)
+                this.sortSelect? this.sortSelect.value = Sorts.discountDwn : ''
+                break
+            default:
+                break
+        }
+        
+    }
+    private updateCurData(obj: IQueryObj) { // принимает объект parse и фильтрует массив Cur
+        if (!this.curData) return 
+        if (Object.keys(obj).length === 0) return
+        for (const option in obj) {
+            switch(option) {
+                case QueryOptions.brand:
+                    this.curData = this.curData?.filter((el) => obj[QueryOptions.brand]?.includes(el[QueryOptions.brand].toLowerCase()))
+                    break
+                case QueryOptions.category:
+                    this.curData = this.curData?.filter((el) => obj[QueryOptions.category]?.includes(el[QueryOptions.category]))
+                    break
+                // case QueryOptions.price:
+                //     this.curData = this.curData?.filter((el) => obj[QueryOptions.category]?.includes(el[QueryOptions.category]))
+                //     break
+                // case QueryOptions.stock:
+                //     this.curData = this.curData?.filter((el) => obj[QueryOptions.stock]?.includes(el[QueryOptions.stock]))
+                //     break
+                // case QueryOptions.search:
+                //     this.curData = this.curData?.filter((el) => obj[QueryOptions.search]?.includes(el[QueryOptions.search]))
+                //     break
+                case QueryOptions.sort:
+                    this.sortData(obj[QueryOptions.sort] ? obj[QueryOptions.sort] : '')
+                    break
+                default:
+                    break
+            }
+        }
+    }
 
     public update(data: IProduct[] | null) {
-        console.log('тут будет код для обновления')
-        console.log(data)
         if (data) {
-            let  newData = data.slice()
-            this.renderCards(newData, true)
+            this.parentData = data
+            this.curData = data.slice()
+            const urlParseObj = this.urlParse()
+            // const urlParseObj = метод парсинга URL
+            this.updateCurData(urlParseObj)
+            // метод рендера filters categories
+            this.categoryFilterList ? this.categoryFilterList.innerHTML = '' : ''
+            this.categoryFilterList?.append(...this.fillFilter(FiltersFields.category, urlParseObj[QueryOptions.category]))
+            // метод рендера filters brands
+            this.brandFilterList ? this.brandFilterList.innerHTML = '' : ''
+            this.brandFilterList?.append(...this.fillFilter(FiltersFields.brand, urlParseObj[QueryOptions.brand]))
+            if (urlParseObj.big) {
+                this.renderCards(this.curData, urlParseObj.big === 'true')
+                console.log('bool', Boolean(urlParseObj.big), urlParseObj.big)
+                urlParseObj.big === 'true'
+                    ? this.viewBig?.classList.add('controls__view--active')
+                    : this.viewSmall?.classList.add('controls__view--active')
+            } else {
+                this.renderCards(this.curData, true)
+                this.viewBig?.classList.add('controls__view--active')
+            }
+            // метод рендера sliders
+            // метод рендера serach
+            // this.renderCards(this.curData, urlParseObj.big ? Boolean(urlParseObj.big) : true)
         }
     }
 }

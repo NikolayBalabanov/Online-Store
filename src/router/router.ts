@@ -19,8 +19,8 @@ export function Router() {
                 return
             }
         }
-        e.preventDefault();
-        urlRoute();
+        // e.preventDefault();
+        // urlRoute();
     });
      
     // create a function that watches the url and calls the urlLocationHandler

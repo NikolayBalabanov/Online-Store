@@ -26,7 +26,7 @@ export interface IProduct {
     title: string
 }
 
-let appData: IProduct[] | null = null
+export let appData: IProduct[] | null = null
 
 export const header = new Header()
 const footer = new Footer()
