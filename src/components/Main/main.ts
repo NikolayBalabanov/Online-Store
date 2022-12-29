@@ -58,7 +58,7 @@ export class Main {
     private stockInfo: HTMLDivElement | undefined
     private stockStart: HTMLInputElement | undefined
     private stockFinish: HTMLInputElement | undefined
-    private mainContainer: HTMLDivElement | undefined
+    public mainContainer: HTMLDivElement | undefined
     private cardsContainer: HTMLDivElement | undefined
     public parentData: IProduct[] | null
     private curData: IProduct[] | null
@@ -74,6 +74,8 @@ export class Main {
     private found: HTMLDivElement | undefined
     private priceSliderFlag: boolean
     private stockSliderFlag: boolean
+    private filtersContainer: HTMLDivElement | undefined
+    private productsContainer: HTMLDivElement | undefined
     constructor() {
         this.parentData = null
         this.curData = null
@@ -94,6 +96,8 @@ export class Main {
     public createProductsLayout() {
         const filters = this.createFiltersContainer()
         const products = this.createProductsContainer()
+        this.filtersContainer = filters
+        this.productsContainer = products
         if (this.mainContainer) {
             this.mainContainer.append(filters, products)
         }
@@ -857,12 +861,11 @@ export class Main {
         }
     }
     public update(data: IProduct[] | null) {
-        if (data) {
+        if (data && this.productsContainer && this.filtersContainer) {
             header.update()
             this.parentData = data
             this.curData = data.slice()
             const urlParseObj = this.urlParse()
-            console.log('urlParseObj', urlParseObj)
             this.updateCurData(urlParseObj)
             // метод рендера filters categories
             this.categoryFilterList ? this.categoryFilterList.innerHTML = '' : ''
