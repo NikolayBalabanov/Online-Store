@@ -51,27 +51,34 @@ type TCategoryCnt = {
 }
 
 export class Main {
-    price: HTMLDivElement | undefined
-    priceInfo: HTMLDivElement | undefined
-    priceStart: HTMLInputElement | undefined
-    priceFinish: HTMLInputElement | undefined
-    stockInfo: HTMLDivElement | undefined
-    stockStart: HTMLInputElement | undefined
-    stockFinish: HTMLInputElement | undefined
-    mainContainer: HTMLDivElement | undefined
-    cardsContainer: HTMLDivElement | undefined
-    parentData: IProduct[] | null
-    curData: IProduct[] | null
-    categoryFilterList: HTMLUListElement | undefined
-    brandFilterList: HTMLUListElement | undefined
-    priceSliderList: HTMLDivElement | undefined
-    stockSliderList: HTMLDivElement | undefined
-    sortSelect: HTMLSelectElement | undefined
-    viewSmall: HTMLDivElement | undefined
-    viewBig: HTMLDivElement | undefined
+    private price: HTMLDivElement | undefined
+    private priceInfo: HTMLDivElement | undefined
+    private priceStart: HTMLInputElement | undefined
+    private priceFinish: HTMLInputElement | undefined
+    private stockInfo: HTMLDivElement | undefined
+    private stockStart: HTMLInputElement | undefined
+    private stockFinish: HTMLInputElement | undefined
+    private mainContainer: HTMLDivElement | undefined
+    private cardsContainer: HTMLDivElement | undefined
+    public parentData: IProduct[] | null
+    private curData: IProduct[] | null
+    private categoryFilterList: HTMLUListElement | undefined
+    private brandFilterList: HTMLUListElement | undefined
+    private priceSliderList: HTMLDivElement | undefined
+    private stockSliderList: HTMLDivElement | undefined
+    private sortSelect: HTMLSelectElement | undefined
+    private viewSmall: HTMLDivElement | undefined
+    private viewBig: HTMLDivElement | undefined
+    private notFound: HTMLDivElement | undefined
+    private search: HTMLInputElement | undefined
+    private found: HTMLDivElement | undefined
+    private priceSliderFlag: boolean
+    private stockSliderFlag: boolean
     constructor() {
         this.parentData = null
         this.curData = null
+        this.priceSliderFlag = false
+        this.stockSliderFlag = false
     }
 
     public createMainContainer() {
@@ -123,7 +130,6 @@ export class Main {
         copyURL.textContent = 'Copy Link'
 
         copyURL.addEventListener('click', () => {
-            console.log()
             navigator.clipboard.writeText(window.location.href)
             copyURL.textContent = 'Copied!'
             setTimeout(() => {copyURL.textContent = 'Copy Link'}, 400)
@@ -174,6 +180,9 @@ export class Main {
         finishInputRange.min = '0'
         finishInputRange.max = '-1'
 
+        startInputRange.addEventListener('input', () => this.controlSliderFrom(startInputRange, finishInputRange, QueryOptions.price))
+        finishInputRange.addEventListener('input', () => this.controlSliderTo(startInputRange, finishInputRange, QueryOptions.price))
+
         return wrap
     }
     private createStockSliderWrap() {
@@ -205,6 +214,9 @@ export class Main {
         finishInputRange.min = '0'
         finishInputRange.max = '-1'
 
+        startInputRange.addEventListener('input', () => this.controlSliderFrom(startInputRange, finishInputRange, QueryOptions.stock))
+        finishInputRange.addEventListener('input', () => this.controlSliderTo(startInputRange, finishInputRange, QueryOptions.stock))
+
         return wrap
     }
     private createProductsContainer() {
@@ -213,6 +225,7 @@ export class Main {
         const productsControls = this.createProductsControls()
         const productsCardsWrap = this.createProductsItemsWrap()
         const productsNotFound = this.createProductsNotFound()
+        this.notFound = productsNotFound
         main.classList.add('main__products', 'products')
         mainContainer.classList.add('products__container')
         main.append(mainContainer)
@@ -280,6 +293,8 @@ export class Main {
         searchBar.append(searchInput)
         searchInput.type = 'search'
         searchInput.placeholder = 'Search product'
+        this.search = searchInput
+        this.found = found
 
         viewSwitchers.append(viewSmall, viewBig)
         for (let i = 0; i < 36; i++) {
@@ -296,27 +311,18 @@ export class Main {
         this.sortSelect = sortSelect
 
         sortSelect.addEventListener('change', () => {
-            console.log(sortSelect.value)
             this.updateURL(sortSelect.value, 'sort')
         })
 
         searchInput.addEventListener('input', () => {
-            // appUpdate()
-            // перерисовка контента карточек
-            // сохранить стейт поиска в URL
+            this.updateURL(searchInput.value, 'search')
         })
         viewSmall.addEventListener('click', () => {
-            // снять подсветку
-            // подсветить кликнутую кнопку
-            // повесить класс на карочки
             viewBig.classList.remove('controls__view--active')
             viewSmall.classList.add('controls__view--active')
             this.updateURL('false', 'big')
         })
         viewBig.addEventListener('click', () => {
-            // снять подсветку
-            // подсветить кликнутую кнопку
-            // снять класс на карочках
             viewSmall.classList.remove('controls__view--active')
             viewBig.classList.add('controls__view--active')
             this.updateURL('true', 'big')
@@ -337,7 +343,6 @@ export class Main {
         return notFoundWrap
     }
     private fillFilter(selector: FiltersFields, checked: string[] = []) {
-        // получает массив строк элементов которые чекнуты
         const filterItems: HTMLDivElement[] = []
         if (this.parentData && this.curData) {
             const selectors: ICategory = {}
@@ -353,7 +358,6 @@ export class Main {
                     selectors[el[selector]].available += 1
                 }
             })
-            console.log('selectors', selectors)
             Object.entries(selectors).forEach(([elem, elemObj]) => {
                 const checkWrap = document.createElement('div')
                 const checkbox = document.createElement('input')
@@ -361,8 +365,7 @@ export class Main {
                 const text = document.createElement('span')
 
                 checkWrap.classList.add('checkbox-item')
-                if (elemObj.available > 0 && checked.length === 0) checkWrap.classList.add('checkbox-item--active')
-                if (elemObj.available > 0 && checked.includes(elem)) checkWrap.classList.add('checkbox-item--active')
+                if (elemObj.available > 0 && checked.length === 0 || checked.includes(elem.toLowerCase())) checkWrap.classList.add('checkbox-item')
                 else checkWrap.classList.add('checkbox-item--inactive')
                 checkbox.classList.add('checkbox-item__checkbox')
                 if (checked?.includes(elem.toLowerCase())) checkbox.checked = true
@@ -383,29 +386,231 @@ export class Main {
                     } else {
                         checked.push(elem.toLowerCase())
                     }
-                    
                     let selectorItemsStr = checked.join('↕')
                     this.updateURL(selectorItemsStr, selector)
                 })
             })
-           
         }
         return filterItems
     }
-    private setPriceSlider() {
-        // хз
+    private getParsed(currentFrom: HTMLInputElement, currentTo: HTMLInputElement) {
+        const from = parseInt(currentFrom.value, 10);
+        const to = parseInt(currentTo.value, 10);
+        return [from, to];
     }
-    private setStockSlider() {
-        // хз
+    private controlSliderFrom(fromSlider: HTMLInputElement, toSlider: HTMLInputElement, name: QueryOptions) {
+        let minVal = 0
+        let maxVal = 0
+        if (this.parentData) {
+            switch(name) {
+                case QueryOptions.price:
+                    const [minPrice, maxPrice] = this.getSliderBorders(this.parentData, QueryOptions.price)
+                    minVal = minPrice
+                    maxVal = maxPrice
+                    break
+                case QueryOptions.stock:
+                    const [minStock, maxStock] = this.getSliderBorders(this.parentData, QueryOptions.stock)
+                    minVal = minStock
+                    maxVal = maxStock
+                    break
+                default:
+                    break
+            }
+        }
+        const [from, to] = this.getParsed(fromSlider, toSlider)
+        if (from > to) {
+            switch(name) {
+                case QueryOptions.price:
+                    this.priceSliderFlag = true
+                    break
+                case QueryOptions.stock:
+                    this.stockSliderFlag = true
+                    break
+                default:
+                    this.priceSliderFlag = true
+                    this.stockSliderFlag = true
+                    break
+            }
+            this.updateURL(toSlider.value.toString() + '↕' + (Number(fromSlider.value) > maxVal ? maxVal : fromSlider.value).toString(), name)
+        } else {
+            switch(name) {
+                case QueryOptions.price:
+                    this.priceSliderFlag = false
+                    break
+                case QueryOptions.stock:
+                    this.stockSliderFlag = false
+                    break
+                default:
+                    this.priceSliderFlag = false
+                    this.stockSliderFlag = false
+                    break
+            }
+            this.updateURL((Number(fromSlider.value) < minVal ? minVal : fromSlider.value).toString() + '↕' + toSlider.value.toString(), name)
+        }
     }
-    private createCard() {
-        // получает объект { isInCart: boolean, isBig: boolean, data: ICardData }
+    private controlSliderTo(fromSlider: HTMLInputElement, toSlider: HTMLInputElement, name: QueryOptions) {
+        let minVal = 0
+        let maxVal = 0
+        if (this.parentData) {
+            switch(name) {
+                case QueryOptions.price:
+                    const [minPrice, maxPrice] = this.getSliderBorders(this.parentData, QueryOptions.price)
+                    minVal = minPrice
+                    maxVal = maxPrice
+                    break
+                case QueryOptions.stock:
+                    const [minStock, maxStock] = this.getSliderBorders(this.parentData, QueryOptions.stock)
+                    minVal = minStock
+                    maxVal = maxStock
+                    break
+                default:
+                    break
+            }
+        }
+        const [from, to] = this.getParsed(fromSlider, toSlider)
+        if (from <= to) {
+            switch(name) {
+                case QueryOptions.price:
+                    this.priceSliderFlag = false
+                    break
+                case QueryOptions.stock:
+                    this.stockSliderFlag = false
+                    break
+                default:
+                    this.priceSliderFlag = false
+                    this.stockSliderFlag = false
+                    break
+            }
+            this.updateURL(fromSlider.value.toString() + '↕' + (Number(toSlider.value) > maxVal ? maxVal : toSlider.value).toString(), name)
+
+        } else {
+            switch(name) {
+                case QueryOptions.price:
+                    this.priceSliderFlag = true
+                    break
+                case QueryOptions.stock:
+                    this.stockSliderFlag = true
+                    break
+                default:
+                    this.priceSliderFlag = true
+                    this.stockSliderFlag = true
+                    break
+            }
+            this.updateURL((Number(toSlider.value) < minVal ? minVal : toSlider.value).toString() + '↕' + fromSlider.value.toString(), name)
+        }
     }
-    private setFound() {
-        // получает значение количества товаров и устанавливает его в this.found
+    private getSliderBorders(data: IProduct[], name: QueryOptions) {
+        switch(name) {
+            case QueryOptions.price:
+                const parentPrice = data.map(el => el[QueryOptions.price])
+                const parentPriceMin = Math.min(...parentPrice)
+                const parentPriceMax = Math.max(...parentPrice)
+                return [parentPriceMin, parentPriceMax]
+            case QueryOptions.stock:
+                const parentStock = data.map(el => el[QueryOptions.stock])
+                const parentStockMin = Math.min(...parentStock)
+                const parentStockMax = Math.max(...parentStock)
+                return [parentStockMin, parentStockMax]
+            default:
+                const parentDef = data.map(el => el.price)
+                const parentDefMin = Math.min(...parentDef)
+                const parentDefMax = Math.max(...parentDef)
+                return [parentDefMin, parentDefMax]
+        }
     }
-    private setSearch() {
-        // получает значение сортировки и устанавливает его в поле сортировки
+    private setPriceSlider(urlData: number[] = []) {
+        if (this.parentData && this.curData) {
+            const [parentPriceMin, parentPriceMax] = this.getSliderBorders(this.parentData, QueryOptions.price)
+            const [curPriceMin, curPriceMax] = this.getSliderBorders(this.curData, QueryOptions.price)
+            this.priceStart? this.priceStart.max = parentPriceMax.toString() : ''
+            this.priceFinish? this.priceFinish.max = parentPriceMax.toString() : ''
+            if (urlData.length > 0 
+                && this.curData.length 
+                && this.priceInfo 
+                && urlData[0] !== urlData[1]) {
+                if (this.priceSliderFlag) {
+                    if (this.priceStart && this.priceFinish) {
+                        this.priceStart.value = urlData[1] > curPriceMax ? curPriceMax.toString() : urlData[1].toString()
+                        this.priceFinish.value = urlData[0] > curPriceMin ? curPriceMin.toString() : urlData[0].toString()
+                    }
+                } else {
+                    if (this.priceStart && this.priceFinish) {
+                        this.priceStart.value = urlData[0] > curPriceMin ? curPriceMin.toString() : urlData[0].toString()
+                        this.priceFinish.value = urlData[1] > curPriceMax ? curPriceMax.toString() : urlData[1].toString()
+                    }
+                }
+            }
+            else if (urlData.length === 0 && this.priceInfo && this.curData.length) {
+                this.priceStart? this.priceStart.value = curPriceMin.toString() : ''
+                this.priceFinish? this.priceFinish.value = curPriceMax.toString() : ''
+            }
+            else if (urlData.length > 0 && this.curData.length && this.priceInfo && urlData[0] === urlData[1]) {
+                this.priceStart? this.priceStart.value = urlData[0].toString() : ''
+                this.priceFinish? this.priceFinish.value = urlData[1].toString() : ''
+            }
+            if (this.priceInfo && this.curData.length) {
+                this.priceInfo.innerHTML = ''
+                const fromText = document.createElement('span')
+                const toText = document.createElement('span')
+                const delimiter = document.createElement('span')
+                if (this.priceSliderFlag) {
+                    fromText.textContent = this.priceFinish? '€' + this.priceFinish.value : ''
+                    toText.textContent = this.priceStart? '€' + this.priceStart.value : ''
+                } else {
+                    fromText.textContent = this.priceStart? '€' + this.priceStart.value : ''
+                    toText.textContent = this.priceFinish? '€' + this.priceFinish.value : ''
+                }
+                delimiter.textContent = ' ⟷ '
+                this.priceInfo.append(fromText, delimiter, toText)
+            }
+        }
+    }
+    private setStockSlider(urlData: number[] = []) {
+        if (this.parentData && this.curData) {
+            const [parentStockMin, parentStockMax] = this.getSliderBorders(this.parentData, QueryOptions.stock)
+            const [curStockMin, curStockMax] = this.getSliderBorders(this.curData, QueryOptions.stock)
+            this.stockStart? this.stockStart.max = parentStockMax.toString() : ''
+            this.stockFinish? this.stockFinish.max = parentStockMax.toString() : ''
+            if (urlData.length > 0 
+                && this.curData.length 
+                && this.stockInfo 
+                && urlData[0] !== urlData[1]) {
+                if (this.stockSliderFlag) {
+                    if (this.stockStart && this.stockFinish) {
+                        this.stockStart.value = urlData[1] > curStockMax ? curStockMax.toString() : urlData[1].toString()
+                        this.stockFinish.value = urlData[0] > curStockMin ? curStockMin.toString() : urlData[0].toString()
+                    }
+                } else {
+                    if (this.stockStart && this.stockFinish) {
+                        this.stockStart.value = urlData[0] > curStockMin ? curStockMin.toString() : urlData[0].toString()
+                        this.stockFinish.value = urlData[1] > curStockMax ? curStockMax.toString() : urlData[1].toString()
+                    }
+                }
+            }
+            else if (urlData.length === 0 && this.stockInfo && this.curData.length) {
+                this.stockStart? this.stockStart.value = curStockMin.toString() : ''
+                this.stockFinish? this.stockFinish.value = curStockMax.toString() : ''
+            }
+            else if (urlData.length > 0 && this.curData.length && this.stockInfo && urlData[0] === urlData[1]) {
+                this.stockStart? this.stockStart.value = urlData[0].toString() : ''
+                this.stockFinish? this.stockFinish.value = urlData[1].toString() : ''
+            }
+            if (this.stockInfo && this.curData.length) {
+                this.stockInfo.innerHTML = ''
+                const fromText = document.createElement('span')
+                const toText = document.createElement('span')
+                const delimiter = document.createElement('span')
+                if (this.stockSliderFlag) {
+                    fromText.textContent = this.stockFinish? this.stockFinish.value : ''
+                    toText.textContent = this.stockStart? this.stockStart.value : ''
+                } else {
+                    fromText.textContent = this.stockStart? this.stockStart.value : ''
+                    toText.textContent = this.stockFinish? this.stockFinish.value : ''
+                }
+                delimiter.textContent = ' ⟷ '
+                this.stockInfo.append(fromText, delimiter, toText)
+            }
+        }
     }
     private updateURL(queryStr: string, selector: string) {
         const url = new URL(window.location.href);
@@ -515,7 +720,6 @@ export class Main {
                 }
                 cardCartBtn.textContent = 'DROP FROM CART'
                 card.classList.add('in-cart')
-                    // add class cardCartBtn
                 header.update()
             })
 
@@ -556,35 +760,37 @@ export class Main {
         return queryObj
     }
     private sortData(str: string) {
-        switch(str) {
-            case Sorts.priseUp:
-                this.curData?.sort((a, b) => a.price - b.price)
-                this.sortSelect? this.sortSelect.value = Sorts.priseUp : ''
-                break
-            case Sorts.priseDwn:
-                this.curData?.sort((a, b) => b.price - a.price)
-                this.sortSelect? this.sortSelect.value = Sorts.priseDwn : ''
-                break
-            case Sorts.ratingUp:
-                this.curData?.sort((a, b) => a.rating - b.rating)
-                this.sortSelect? this.sortSelect.value = Sorts.ratingUp : ''
-                break
-            case Sorts.ratingDwn:
-                this.curData?.sort((a, b) => b.rating - a.rating)
-                this.sortSelect? this.sortSelect.value = Sorts.ratingDwn : ''
-                break
-            case Sorts.discountUp:
-                this.curData?.sort((a, b) => a.discountPercentage - b.discountPercentage)
-                this.sortSelect? this.sortSelect.value = Sorts.discountUp : ''
-                break
-            case Sorts.discountDwn:
-                this.curData?.sort((a, b) => b.discountPercentage - a.discountPercentage)
-                this.sortSelect? this.sortSelect.value = Sorts.discountDwn : ''
-                break
-            default:
-                break
+        if (this.sortSelect) {
+            switch(str) {
+                case Sorts.priseUp:
+                    this.curData?.sort((a, b) => a.price - b.price)
+                    this.sortSelect.value = Sorts.priseUp? Sorts.priseUp : ''
+                    break
+                case Sorts.priseDwn:
+                    this.curData?.sort((a, b) => b.price - a.price)
+                    this.sortSelect.value = Sorts.priseDwn? Sorts.priseDwn : ''
+                    break
+                case Sorts.ratingUp:
+                    this.curData?.sort((a, b) => a.rating - b.rating)
+                    this.sortSelect.value = Sorts.ratingUp? Sorts.ratingUp : ''
+                    break
+                case Sorts.ratingDwn:
+                    this.curData?.sort((a, b) => b.rating - a.rating)
+                    this.sortSelect.value = Sorts.ratingDwn? Sorts.ratingDwn : ''
+                    break
+                case Sorts.discountUp:
+                    this.curData?.sort((a, b) => a.discountPercentage - b.discountPercentage)
+                    this.sortSelect.value = Sorts.discountUp? Sorts.discountUp : ''
+                    break
+                case Sorts.discountDwn:
+                    this.curData?.sort((a, b) => b.discountPercentage - a.discountPercentage)
+                    this.sortSelect.value = Sorts.discountDwn? Sorts.discountDwn : ''
+                    break
+                default:
+                    this.sortSelect.value = str
+                    break
+            }
         }
-        
     }
     private updateCurData(obj: IQueryObj) { // принимает объект parse и фильтрует массив Cur
         if (!this.curData) return 
@@ -597,30 +803,66 @@ export class Main {
                 case QueryOptions.category:
                     this.curData = this.curData?.filter((el) => obj[QueryOptions.category]?.includes(el[QueryOptions.category]))
                     break
-                // case QueryOptions.price:
-                //     this.curData = this.curData?.filter((el) => obj[QueryOptions.category]?.includes(el[QueryOptions.category]))
-                //     break
-                // case QueryOptions.stock:
-                //     this.curData = this.curData?.filter((el) => obj[QueryOptions.stock]?.includes(el[QueryOptions.stock]))
-                //     break
-                // case QueryOptions.search:
-                //     this.curData = this.curData?.filter((el) => obj[QueryOptions.search]?.includes(el[QueryOptions.search]))
-                //     break
+                case QueryOptions.price:
+                    this.curData = this.curData?.filter((el) => {
+                        let min = obj[QueryOptions.price] 
+                            ? obj[QueryOptions.price][0] 
+                            : this.parentData 
+                                ? Math.min(...this.parentData.map(el => el.price)) 
+                                : -1
+                        let max = obj[QueryOptions.price] 
+                            ? obj[QueryOptions.price][1] 
+                            : this.parentData 
+                                ? Math.min(...this.parentData.map(el => el.price)) 
+                                : -1
+                        return el.price >= min && el.price <= max
+                    })
+                    break
+                case QueryOptions.stock:
+                    this.curData = this.curData?.filter((el) => {
+                        let min = obj[QueryOptions.stock] 
+                            ? obj[QueryOptions.stock][0] 
+                            : this.parentData 
+                                ? Math.min(...this.parentData.map(el => el.stock)) 
+                                : -1
+                        let max = obj[QueryOptions.stock] 
+                            ? obj[QueryOptions.stock][1] 
+                            : this.parentData 
+                                ? Math.min(...this.parentData.map(el => el.stock)) 
+                                : -1
+                        return el.stock >= min && el.stock <= max
+                    })
+                    break
+                case QueryOptions.search:
+                    if (obj[QueryOptions.search]) {
+                        const searchStr = obj[QueryOptions.search].toLowerCase()
+                        this.curData = this.curData?.filter((el) => {
+                            const isBrand = el.brand.toLowerCase().includes(searchStr)
+                            const isTitle = el.title.toLowerCase().includes(searchStr)
+                            const isDescr = el.description.toLowerCase().includes(searchStr)
+                            const isPrice = (el.price).toString().includes(searchStr)
+                            const isCategory = el.category.toLowerCase().includes(searchStr)
+                            const isRating = (el.rating).toString().includes(searchStr)
+                            const isDiscount = (el.discountPercentage).toString().includes(searchStr)
+                            return isBrand || isTitle || isDescr || isPrice || isCategory || isRating || isDiscount
+                        })
+                    }
+                    break
                 case QueryOptions.sort:
-                    this.sortData(obj[QueryOptions.sort] ? obj[QueryOptions.sort] : '')
+                    this.sortData(obj[QueryOptions.sort] ? obj[QueryOptions.sort] : 'Sort options:')
                     break
                 default:
                     break
             }
         }
     }
-
     public update(data: IProduct[] | null) {
         if (data) {
+            header.update()
             this.parentData = data
             this.curData = data.slice()
             const urlParseObj = this.urlParse()
-            // const urlParseObj = метод парсинга URL
+            console.log('urlParseObj', urlParseObj)
             this.updateCurData(urlParseObj)
             // метод рендера filters categories
             this.categoryFilterList ? this.categoryFilterList.innerHTML = '' : ''
@@ -628,19 +870,35 @@ export class Main {
             // метод рендера filters brands
             this.brandFilterList ? this.brandFilterList.innerHTML = '' : ''
             this.brandFilterList?.append(...this.fillFilter(FiltersFields.brand, urlParseObj[QueryOptions.brand]))
+            // методы рендера sliders
+            this.setPriceSlider(urlParseObj.price ? urlParseObj.price : [])
+            this.setStockSlider(urlParseObj.stock ? urlParseObj.stock : [])
+            // метод рендера serach
+            if (this.search) {
+                this.search.value = urlParseObj.search ? urlParseObj.search : ''
+            }
+            if (this.sortSelect) {
+                urlParseObj.search ? '' : this.sortData('Sort options:')
+            }
             if (urlParseObj.big) {
                 this.renderCards(this.curData, urlParseObj.big === 'true')
-                console.log('bool', Boolean(urlParseObj.big), urlParseObj.big)
                 urlParseObj.big === 'true'
                     ? this.viewBig?.classList.add('controls__view--active')
                     : this.viewSmall?.classList.add('controls__view--active')
             } else {
                 this.renderCards(this.curData, true)
                 this.viewBig?.classList.add('controls__view--active')
+                this.viewSmall?.classList.remove('controls__view--active')
+                console.log('viewBig', this.viewBig)
             }
-            // метод рендера sliders
-            // метод рендера serach
-            // this.renderCards(this.curData, urlParseObj.big ? Boolean(urlParseObj.big) : true)
+            if (this.curData.length > 0 && this.notFound) {
+                this.notFound.classList.add('is-hidden')
+                this.found ? this.found.textContent = `Found: ${this.curData.length}` : ''
+            } 
+            if (this.curData.length === 0 && this.notFound) {
+                this.notFound.classList.remove('is-hidden')
+                this.found ? this.found.textContent = 'Found: 0' : ''
+            }
         }
     }
 }

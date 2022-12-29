@@ -30,7 +30,7 @@ export let appData: IProduct[] | null = null
 
 export const header = new Header()
 const footer = new Footer()
-const main = new Main()
+export const main = new Main()
 
 document.body.append(header.createLayout())
 document.body.append(main.createMainContainer())
@@ -40,7 +40,12 @@ async function fetchData() {
     const response = await fetch('https://dummyjson.com/products?limit=100')
     const data : IFetchData = await response.json()
     console.log(data)
-    appData = data.products
+    appData = data.products.map(el => {
+        if (el.brand === "APPle") {
+            el.brand = 'Apple'
+        }
+        return el
+    })
     main.update(appData)
     // header.update()
 }
