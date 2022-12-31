@@ -66,13 +66,11 @@ export class Header {
     public update() {
         const cartArr = getCartArr()
         if (this.price && this.cartCnt && cartArr.length > 0) {
-            console.log('Обновить счетчик карзины и сумму карзины')
             const cnt = cartArr.length.toString()
             const price = cartArr.map(el => el.price).reduce((acc, cur) => acc + cur).toString()
             this.price.textContent = `€${price}.00`
             this.cartCnt.textContent = `${cnt}`
         } else {
-            console.log('Невозможно обновить счетчик карзины и сумму карзины')
             if (this.price && this.cartCnt && cartArr.length === 0) {
                 this.price.textContent = '€0.00'
                 this.cartCnt.textContent = '0'
