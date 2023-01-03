@@ -1,3 +1,5 @@
+import { main } from "../index";
+
 type TCallBack = (event?: Event | undefined) => void
 
 const enum KnownRoutes {
@@ -45,6 +47,8 @@ export function Router() {
         // query params?
         if (location === KnownRoutes.HomePage) {
             console.log('location /', location)
+            console.log('location is', window.location)
+            main.update(main.parentData)
         } else if (location === KnownRoutes.Cart) {
             console.log('location /cart', location)
         } else if (location.match(KnownRoutes.ProductDetails)) {

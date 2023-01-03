@@ -9,12 +9,42 @@ html {
     box-sizing: border-box;
     scroll-behavior: smooth;
 }
+
+body {
+    background-image: url(./assets/images/bg.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
   
 *,
 *::before,
 *::after {
     -webkit-box-sizing: inherit;
     box-sizing: inherit;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #181a1c;
+    border-radius: 20px;
+    border: 2px solid orange;
+}
+
+::-webkit-scrollbar-track {
+    background: orange;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: calc(.2rem + 1vw);
+    color: orange;
+    font-family: Philosopher,sans-serif;
+    word-wrap: break-word;
 }
 
 .container {
