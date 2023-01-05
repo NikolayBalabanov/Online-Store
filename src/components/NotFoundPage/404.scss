@@ -1,0 +1,15 @@
+.never-page {
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    &__text {
+        padding: 1rem;
+        font-size: 200%;
+        border: 2px solid orange;
+        border-radius: 1rem;
+        background: #181a1c;
+    }
+}
