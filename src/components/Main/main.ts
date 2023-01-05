@@ -702,7 +702,7 @@ export class Main {
             cardRatingAttr.textContent = 'Rating: '
             cardStockAttr.textContent = 'Stock: '
             cardDetails.textContent = 'DETAILS'
-            cardDetails.href = `/product-details/${el.id}`
+            cardDetails.href = `${window.location.pathname}product-details/${el.id}`
             
             cardCartBtn.textContent = isInCart ? 'DROP FROM CART' : 'ADD TO CART'
             cardCartBtn.addEventListener('click', () => {

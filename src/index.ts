@@ -4,6 +4,7 @@ import { Router } from "./router/router";
 import { Header } from "./components/Header/header";
 import { Footer } from './components/Footer/footer';
 import { Main } from './components/Main/main';
+import { Details } from './components/Details/details';
 
 interface IFetchData {
     limit: number
@@ -31,6 +32,7 @@ export let appData: IProduct[] | null = null
 export const header = new Header()
 const footer = new Footer()
 export const main = new Main()
+export const details = new Details()
 
 document.body.append(header.createLayout())
 document.body.append(main.createMainContainer())
