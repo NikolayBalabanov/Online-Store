@@ -1,17 +1,21 @@
-import './cart.scss'
+import './cart.css'
 
-export class cart {
-    cartContainer: HTMLDivElement | undefined
+export class Сart {
+    public cartContainer: HTMLDivElement | undefined
+    // Кол-во и ID товаров, кол-во товаров на странице, промо коды 
+    // изменение и удаление
+    // предусмотреть очистку main__container при отображении
+    // определение переменных
 
+    // create cart page 
     constructor () {}
-
     public createCartContainer() {
         const cart = document.createElement('cart')
         const cartContainer = document.createElement('div')
-        cart.classList.add('cart')
-        cartContainer.classList.add('cart__container', 'container')
-        cart.append(cartContainer)
-        this.cartContainer = cartContainer
+        cartContainer.classList.add('cart__container')
+        
+
+
         return cart
     }
 
