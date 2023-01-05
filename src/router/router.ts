@@ -1,3 +1,4 @@
+import { notFoundPage } from "../components/NotFoundPage/404";
 import { main } from "../index";
 
 type TCallBack = (event?: Event | undefined) => void
@@ -55,6 +56,7 @@ export function Router() {
             console.log('location /product-details', location)
         } else {
             console.log('location /404', location)
+            notFoundPage(main.mainContainer)
         }
     };
     
