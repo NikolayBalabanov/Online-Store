@@ -4,6 +4,7 @@ import { Router } from "./router/router";
 import { Header } from "./components/Header/header";
 import { Footer } from './components/Footer/footer';
 import { Main } from './components/Main/main';
+import { Cart } from './components/Cart/cart';
 
 interface IFetchData {
     limit: number
@@ -31,9 +32,11 @@ export let appData: IProduct[] | null = null
 export const header = new Header()
 const footer = new Footer()
 export const main = new Main()
+export const cart = new Cart()
 
 document.body.append(header.createLayout())
-document.body.append(main.createMainContainer())
+//document.body.append(main.createMainContainer())
+document.body.append(cart.createCartContainer())
 document.body.append(footer.createLayout())
 main.createProductsLayout()
 async function fetchData() {
