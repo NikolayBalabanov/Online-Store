@@ -5,6 +5,7 @@ import { Header } from "./components/Header/header";
 import { Footer } from './components/Footer/footer';
 import { Main } from './components/Main/main';
 import { Cart } from './components/Cart/cart';
+import { Details } from './components/Details/details';
 
 interface IFetchData {
     limit: number
@@ -33,24 +34,35 @@ export const header = new Header()
 const footer = new Footer()
 export const main = new Main()
 export const cart = new Cart()
+export const details = new Details()
 
 document.body.append(header.createLayout())
-//document.body.append(main.createMainContainer())
-document.body.append(cart.createCartContainer())
+document.body.append(main.createMainContainer())
+//document.body.append(cart.createCartContainer())
 document.body.append(footer.createLayout())
 main.createProductsLayout()
 async function fetchData() {
     const response = await fetch('https://dummyjson.com/products?limit=100')
     const data : IFetchData = await response.json()
-    console.log(data)
     appData = data.products.map(el => {
         if (el.brand === "APPle") {
             el.brand = 'Apple'
         }
         return el
     })
-    main.update(appData)
-    // header.update()
+    switch(window.location.pathname) {
+        case '/':
+            main.update(appData)
+            header.update()
+            break
+        case '/cart':
+            // cart.update(appData) метод, обновляющий контент карзины. Может и полностью ререндерить
+            header.update()
+            break
+        default:
+            break
+
+    }
 }
 fetchData()
 
