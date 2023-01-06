@@ -67,13 +67,30 @@
 
 .limit_button1 {
     cursor: pointer;
+    padding: 0.3rem;
 }
 
 .limit_button2 {
     cursor: pointer;
+    padding: 0.3rem;
 }
 
-.cart_item {
+.stock_button {
+    cursor: pointer;
+    border: 1px solid orange;;
+    border-radius: 1rem;
+    background: #373636;
+    color: orange;
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+.item__control {
+    text-align: center;
+}
+
+
+.cart__item {
     width: 100%;
     display: block;
     padding: .5%;
@@ -105,11 +122,11 @@
     word-wrap: break-word;
 }
 
-.product_number_control {
+.item__control {
     width: 15%;
 }
 
-.product_title {
+.item_title {
     width: 100%;
     display: flex;
     align-items: center;
@@ -117,17 +134,23 @@
     text-shadow: 0 0 5px rgb(88,68,68),0 0 2px rgb(88,19,19),0 0 3px rgb(164,45,45),0 0 5px rgb(150,33,33);
     border-bottom: 1px solid wheat;
 }
-.product_name {
+.item_name {
     margin: 0;
 }
-.product_description {
+.item_description {
     padding-top: 1%;
     color: wheat;
     font-size: 80%;
     text-align: center;
 }
+.item_description_txt {
+    padding-top: 1%;
+    color: wheat;
+    font-size: 90%;
+    text-align: center;
+}
 
-.product_other {
+.item_other {
     padding-top: 1%;
     display: flex;
     align-items: end;
@@ -153,7 +176,7 @@
 }
 .total_price{
     width: 90%;
-    font-size: 170%;
+    font-size: 110%;
     color: wheat;
     text-align: center;
     margin: 4%;
