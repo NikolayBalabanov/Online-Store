@@ -1,11 +1,11 @@
 import { notFoundPage } from "../components/NotFoundPage/404";
-import { main } from "../index";
+import { appData, details, main } from "../index";
 
 type TCallBack = (event?: Event | undefined) => void
 
 const enum KnownRoutes {
     HomePage = '/',
-    ProductDetails = '/product-details',
+    ProductDetails = '/product-details/',
     Cart = '/cart'
 };
 
@@ -24,10 +24,12 @@ export function Router() {
         }
         e.preventDefault();
         urlRoute();
+        console.log('тут')
     });
      
     // create a function that watches the url and calls the urlLocationHandler
     const urlRoute: TCallBack = (event) => {
+        console.log('тут1')
         event = event || window.event; // get window.event if event argument not provided
         if (event) {
             event.preventDefault();
@@ -47,13 +49,16 @@ export function Router() {
         // in following cases instead console.log() we can set page render function
         // query params?
         if (location === KnownRoutes.HomePage) {
-            console.log('location /', location)
-            console.log('location is', window.location)
-            main.update(main.parentData)
+            main.update(appData)
         } else if (location === KnownRoutes.Cart) {
-            console.log('location /cart', location)
-        } else if (location.match(KnownRoutes.ProductDetails)) {
+            if (main.mainContainer) main.mainContainer.innerHTML = ''
+            // тут что-то что рендерит разметку карзины
+
+        } else if (location.includes(KnownRoutes.ProductDetails)) {
             console.log('location /product-details', location)
+            if (main.mainContainer) main.mainContainer.innerHTML = ''
+            details.render(main.mainContainer)
+
         } else {
             console.log('location /404', location)
             notFoundPage(main.mainContainer)

@@ -8,7 +8,8 @@ module.exports = (env) => ({
     entry: path.resolve(__dirname, './src/index.ts'),
     output: {
         filename: 'index.js',
-        path: path.resolve(__dirname, '../dist'),
+        // path: path.resolve(__dirname, '../dist'),
+        publicPath: '/',
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],
@@ -88,7 +89,9 @@ module.exports = (env) => ({
         }),
       ],
     },
+    devtool: 'inline-source-map',
     devServer: {
+      static: path.resolve(__dirname, '../dist'),
       historyApiFallback: true,
       hot: true,
     },
