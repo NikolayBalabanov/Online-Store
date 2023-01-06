@@ -57,22 +57,28 @@ export class Details {
         const category = document.createElement('a')
         const brand = document.createElement('a')
         const title = document.createElement('a')
-        const arraw = document.createElement('span')
+        const arraw1 = document.createElement('span')
+        const arraw2 = document.createElement('span')
+        const arraw3 = document.createElement('span')
 
         legend.classList.add('product__legend')
         storeLink.classList.add('product__link')
         category.classList.add('product__link')
         brand.classList.add('product__link')
         title.classList.add('product__link')
-        arraw.classList.add('product__arrow')
+        arraw1.classList.add('product__arrow')
+        arraw2.classList.add('product__arrow')
+        arraw3.classList.add('product__arrow')
         
-        legend.append(storeLink, arraw, category, arraw, brand, arraw, title)
+        legend.append(storeLink, arraw1, category, arraw2, brand, arraw3, title)
         storeLink.textContent = 'STORE'
         storeLink.href = '/'
         category.textContent = `${product.category.toUpperCase()}`
         brand.textContent = `${product.brand.toUpperCase()}`
         title.textContent = `${product.title.toUpperCase()}`
-        arraw.textContent = ' >> '
+        arraw1.textContent = ' >> '
+        arraw2.textContent = ' >> '
+        arraw3.textContent = ' >> '
 
         return legend
     }
@@ -230,6 +236,23 @@ export class Details {
             }
             addToCart.textContent = 'DROP FROM CART'
             header.update()
+        })
+
+        buy.addEventListener('click', () => {
+            isInCart = cartArr.find(isExist)
+            if (cartArr.length > 0) {
+                if (isInCart) {
+                    return
+                }
+                cartArr.push({ id: product.id, price: product.price })
+                localStorage.setItem('cart', JSON.stringify(cartArr))
+            } else {
+                cartArr.push({ id: product.id, price: product.price })
+                localStorage.setItem('cart', JSON.stringify(cartArr))
+            }
+            header.update()
+
+            console.log('Модалочку в студию')
         })
 
         return wrap
