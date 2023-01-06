@@ -1,0 +1,141 @@
+.product {
+    width: 80%;
+    height: -moz-fit-content;
+    height: fit-content;
+
+    &__not-found {
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60%;
+        font-size: 200%;
+        text-align: center;
+
+        & span {
+            margin: 0.5rem;
+            font-size: 120%;
+            color: red;
+        }
+    }
+
+    &__legend {
+        margin: 3% auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        width: 100%;
+    }
+
+    &__details {
+        width: 100%;
+        border: 2px solid orange;
+        border-radius: 1rem;
+        background: rgba(24,26,28,.5);
+        overflow: hidden;
+    }
+}
+
+.details {
+    &__title {
+        padding: .5%;
+        width: 100%;
+        font-size: 150%;
+        text-align: center;
+        border-bottom: 1px solid orange;
+        background: #181a1c;
+    }
+
+    &__info {
+        padding: .5%;
+        display: flex;
+        width: 100%;
+    }
+}
+
+.slider {
+    width: 40%;
+    display: flex;
+
+    &__previews {
+        width: 25%;
+
+        & * {
+            width: 80%;
+            border: 1px solid orange;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+    }
+
+    &__scene {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 70%;
+
+        & * {
+            max-height: 40vh;
+            width: auto;
+            max-width: 100%;
+            border: 1px solid orange;
+            border-radius: 0.5rem;
+        }
+    }
+}
+
+.descr {
+    width: 40%;
+
+    &__wrap {
+        margin: 1% auto;
+        overflow: hidden;
+        border: 1px solid orange;
+        border-radius: 0.3rem;
+        text-align: center;
+    }
+
+    &__title {
+        padding: .7%;
+        text-align: center;
+        background-color: #181a1c;
+    }
+
+    &__text {
+        padding: .7%;
+        color: wheat;
+    }
+}
+
+.add-to {
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    &__content {
+        width: 90%;
+        font-size: 200%;
+        color: wheat;
+        text-shadow: 0 0 10px rgb(184 24 24), 0 0 20px red, 0 0 30px red, 0 0 40px red;
+    }
+
+    &__price {
+        font-size: 100%;
+    }
+
+    &__cart,
+    &__buy {
+        margin: 1rem auto;
+        padding: 7% 0;
+        display: block;
+        width: 100%;
+        font-size: 40%;
+        color: wheat;
+        border: 2px solid orange;
+        border-radius: 0.3rem;
+        background: #9a3535;
+        cursor: pointer;
+    }
+}

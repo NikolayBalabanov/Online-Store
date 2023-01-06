@@ -1,6 +1,7 @@
 import { header, IProduct } from "../../index"
 import { getCartArr } from "../../utils/getCartArr"
 import { ICartItem } from "../Main/main"
+import './details.scss'
 
 export class Details {
     productContainer: HTMLDivElement | undefined
@@ -11,7 +12,6 @@ export class Details {
             const productContainer = document.createElement('div')
             productContainer.classList.add('product')
             this.productContainer = productContainer
-            // сохранить контейнер?
             container.append(productContainer)
             productContainer.append(this.createLayout(this.urlParse()))
             this.fetchProduct(this.urlParse())
@@ -26,14 +26,14 @@ export class Details {
             return wrapper
         } else {
             const productNutFound = document.createElement('div')
+            productNutFound.classList.add('product__not-found')
             productNutFound.innerHTML = `Product number <span>${id}</span> not found`
             return productNutFound
         }
     }
     urlParse() {
-        // const [path, id] = window.location.pathname.slice(1).split('/')
-        // return id
-        return '2'
+        const [path, id] = window.location.pathname.slice(1).split('/')
+        return id
     }
     async fetchProduct(id: string) {
         try {
@@ -45,6 +45,10 @@ export class Details {
             }
         } catch (error) {
             console.log('fail to fetch', error)
+            if (this.productContainer) {
+                this.productContainer.innerHTML = ''
+                this.productContainer.append(this.createLayout(id))
+            }
         }
     }
     createLegend(product: IProduct) {
@@ -103,7 +107,6 @@ export class Details {
         mainView.classList.add('slider__main-view')
         mainView.src = product.images[0]
         mainView.alt = product.title
-        console.log('product.images', product.images)
         product.images.forEach((el, ind) => {
             const preview = document.createElement('img')
             preview.classList.add('slider__preview')

@@ -1,11 +1,16 @@
 .main {
     
     &__container {
-        padding-top: 15px;
-        padding-bottom: 15px;
+        padding: 2%;
+        display: flex;
+        justify-content: center;
+        min-height: 85vh;
+        width: 100%;
+    }
+
+    &__wrapper {
         display: flex;
         justify-content: space-between;
-        min-height: 85vh;
         width: 100%;
     }
 
@@ -83,7 +88,7 @@
 
 .brand,
 .category,
-.slider {
+.filters-slider {
     &__title {
         margin: 0;
         text-align: center;
@@ -103,7 +108,7 @@
     }
 }
 
-.slider {
+.filters-slider {
     &__info {
         margin-top: 10px;
         text-align: center;

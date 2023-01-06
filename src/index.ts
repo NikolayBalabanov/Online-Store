@@ -41,15 +41,25 @@ main.createProductsLayout()
 async function fetchData() {
     const response = await fetch('https://dummyjson.com/products?limit=100')
     const data : IFetchData = await response.json()
-    console.log(data)
     appData = data.products.map(el => {
         if (el.brand === "APPle") {
             el.brand = 'Apple'
         }
         return el
     })
-    main.update(appData)
-    // header.update()
+    switch(window.location.pathname) {
+        case '/':
+            main.update(appData)
+            header.update()
+            break
+        case '/cart':
+            // cart.update(appData) метод, обновляющий контент карзины. Может и полностью ререндерить
+            header.update()
+            break
+        default:
+            break
+
+    }
 }
 fetchData()
 

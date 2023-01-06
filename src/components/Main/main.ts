@@ -94,12 +94,16 @@ export class Main {
     }
 
     public createProductsLayout() {
+        const wrapper = document.createElement('div')
+        wrapper.classList.add('main__wrapper')
+
         const filters = this.createFiltersContainer()
         const products = this.createProductsContainer()
         this.filtersContainer = filters
         this.productsContainer = products
         if (this.mainContainer) {
-            this.mainContainer.append(filters, products)
+            wrapper.append(filters, products)
+            this.mainContainer.append(wrapper)
         }
     }
     private createFiltersContainer() {
@@ -163,12 +167,12 @@ export class Main {
         const startInputRange = document.createElement('input')
         const finishInputRange = document.createElement('input')
 
-        wrap.classList.add(`filters__slider`, `slider`)
-        title.classList.add(`slider__title`)
-        valueInfo.classList.add(`slider__info`)
-        sliderContainer.classList.add('slider__ranges')
-        startInputRange.classList.add('slider__range')
-        finishInputRange.classList.add('slider__range')
+        wrap.classList.add('filters__slider', 'filters-slider')
+        title.classList.add('filters-slider__title')
+        valueInfo.classList.add('filters-slider__info')
+        sliderContainer.classList.add('filters-slider__ranges')
+        startInputRange.classList.add('filters-slider__range')
+        finishInputRange.classList.add('filters-slider__range')
         this.priceInfo = valueInfo
         this.priceStart = startInputRange
         this.priceFinish = finishInputRange
@@ -197,12 +201,12 @@ export class Main {
         const startInputRange = document.createElement('input')
         const finishInputRange = document.createElement('input')
 
-        wrap.classList.add(`filters__slider`, `slider`)
-        title.classList.add(`slider__title`)
-        valueInfo.classList.add(`slider__info`)
-        sliderContainer.classList.add('slider__ranges')
-        startInputRange.classList.add('slider__range')
-        finishInputRange.classList.add('slider__range')
+        wrap.classList.add('filters__slider', 'filters-slider')
+        title.classList.add('filters-slider__title')
+        valueInfo.classList.add('filters-slider__info')
+        sliderContainer.classList.add('filters-slider__ranges')
+        startInputRange.classList.add('filters-slider__range')
+        finishInputRange.classList.add('filters-slider__range')
         this.stockInfo = valueInfo
         this.stockStart = startInputRange
         this.stockFinish = finishInputRange
@@ -861,6 +865,10 @@ export class Main {
         }
     }
     public update(data: IProduct[] | null) {
+        if (this.mainContainer) {
+            this.mainContainer.innerHTML = ''
+            this.createProductsLayout()
+        }
         if (data && this.productsContainer && this.filtersContainer) {
             header.update()
             this.parentData = data
@@ -901,6 +909,13 @@ export class Main {
             if (this.curData.length === 0 && this.notFound) {
                 this.notFound.classList.remove('is-hidden')
                 this.found ? this.found.textContent = 'Found: 0' : ''
+            }
+        }
+        else {
+            if (this.mainContainer) {
+                this.mainContainer.innerHTML = ''
+                this.createProductsLayout()
+                if (data) this.update(data)
             }
         }
     }

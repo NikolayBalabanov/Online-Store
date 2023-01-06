@@ -1,5 +1,5 @@
 import { notFoundPage } from "../components/NotFoundPage/404";
-import { details, main } from "../index";
+import { appData, details, main } from "../index";
 
 type TCallBack = (event?: Event | undefined) => void
 
@@ -48,19 +48,16 @@ export function Router() {
         }
         // in following cases instead console.log() we can set page render function
         // query params?
-        console.log('тут2')
         if (location === KnownRoutes.HomePage) {
-            console.log('location /', location)
-            console.log('location is', window.location)
-            main.update(main.parentData)
+            main.update(appData)
         } else if (location === KnownRoutes.Cart) {
-            console.log('location /cart', location)
-            details.render(main.mainContainer)
+            if (main.mainContainer) main.mainContainer.innerHTML = ''
+            // тут что-то что рендерит разметку карзины
 
         } else if (location.includes(KnownRoutes.ProductDetails)) {
             console.log('location /product-details', location)
+            if (main.mainContainer) main.mainContainer.innerHTML = ''
             details.render(main.mainContainer)
-            // main.update(main.parentData)
 
         } else {
             console.log('location /404', location)
