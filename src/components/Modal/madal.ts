@@ -188,7 +188,10 @@ export class Modal {
             }
         })
         modal.addEventListener('click', (e) =>{
-            if (e.target === modal) this.remove()
+            if (e.target === modal) {
+                isModalOpen.state = false
+                this.remove()
+            }
         })
         cardNumber.addEventListener('input', () => {
             switch(cardNumber.value[0]) {
