@@ -5,6 +5,7 @@ import { Header } from "./components/Header/header";
 import { Footer } from './components/Footer/footer';
 import { Main } from './components/Main/main';
 import { Details } from './components/Details/details';
+import { Modal } from './components/Modal/madal';
 
 interface IFetchData {
     limit: number
@@ -28,11 +29,13 @@ export interface IProduct {
 }
 
 export let appData: IProduct[] | null = null
+export let isModalOpen = { state: false }
 
 export const header = new Header()
 const footer = new Footer()
 export const main = new Main()
 export const details = new Details()
+export const modal = new Modal()
 
 document.body.append(header.createLayout())
 document.body.append(main.createMainContainer())

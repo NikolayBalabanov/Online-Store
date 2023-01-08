@@ -1,4 +1,4 @@
-import { header, IProduct } from "../../index"
+import { header, IProduct, isModalOpen } from "../../index"
 import { getCartArr } from "../../utils/getCartArr"
 import { ICartItem } from "../Main/main"
 import './details.scss'
@@ -113,6 +113,9 @@ export class Details {
         mainView.classList.add('slider__main-view')
         mainView.src = product.images[0]
         mainView.alt = product.title
+        if (product.id = 1) {
+            product.images = product.images.slice(1,4)
+        }
         product.images.forEach((el, ind) => {
             const preview = document.createElement('img')
             preview.classList.add('slider__preview')
@@ -238,7 +241,9 @@ export class Details {
             header.update()
         })
 
-        buy.addEventListener('click', () => {
+        buy.addEventListener('click', (e) => {
+            console.log(e)
+            isModalOpen.state = true
             isInCart = cartArr.find(isExist)
             if (cartArr.length > 0) {
                 if (isInCart) {
@@ -251,8 +256,7 @@ export class Details {
                 localStorage.setItem('cart', JSON.stringify(cartArr))
             }
             header.update()
-
-            console.log('Модалочку в студию')
+            console.log('только секунда')
         })
 
         return wrap

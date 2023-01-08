@@ -1,5 +1,5 @@
 import { notFoundPage } from "../components/NotFoundPage/404";
-import { appData, details, main } from "../index";
+import { appData, details, isModalOpen, main, modal } from "../index";
 
 type TCallBack = (event?: Event | undefined) => void
 
@@ -24,12 +24,10 @@ export function Router() {
         }
         e.preventDefault();
         urlRoute();
-        console.log('тут')
     });
      
     // create a function that watches the url and calls the urlLocationHandler
     const urlRoute: TCallBack = (event) => {
-        console.log('тут1')
         event = event || window.event; // get window.event if event argument not provided
         if (event) {
             event.preventDefault();
@@ -50,18 +48,24 @@ export function Router() {
         // query params?
         if (location === KnownRoutes.HomePage) {
             main.update(appData)
+            modal.remove()
         } else if (location === KnownRoutes.Cart) {
             if (main.mainContainer) main.mainContainer.innerHTML = ''
             // тут что-то что рендерит разметку карзины
-
+            console.log('state', isModalOpen.state)
+            // modal.render()
+            if (isModalOpen.state) {
+                modal.render()
+            }
         } else if (location.includes(KnownRoutes.ProductDetails)) {
             console.log('location /product-details', location)
             if (main.mainContainer) main.mainContainer.innerHTML = ''
             details.render(main.mainContainer)
-
+            modal.remove()
         } else {
             console.log('location /404', location)
             notFoundPage(main.mainContainer)
+            modal.remove()
         }
     };
     
