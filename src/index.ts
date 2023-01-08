@@ -37,8 +37,8 @@ export const cart = new Cart()
 export const details = new Details()
 
 document.body.append(header.createLayout())
-//document.body.append(main.createMainContainer())
-document.body.append(cart.createCartContainer())
+document.body.append(main.createMainContainer())
+//document.body.append(cart.createCartContainer())
 document.body.append(footer.createLayout())
 main.createProductsLayout()
 async function fetchData() {
@@ -56,6 +56,7 @@ async function fetchData() {
             header.update()
             break
         case '/cart':
+            cart.CartLayout(appData) // проба с передачей appData
             // cart.update(appData) метод, обновляющий контент карзины. Может и полностью ререндерить
             header.update()
             break

@@ -21,7 +21,7 @@
     word-wrap: break-word;
 }
 
-.products__container {
+.productsCart__container {
     width: 69%;
     border: 1px solid orange;
     overflow: hidden;
@@ -253,4 +253,12 @@
     cursor: pointer;
     width: 50%;
     margin: 3rem auto 1rem;
+}
+
+.cart__empty {
+    font-size: 200%;
+    text-align: center;
+    border: 2px solid orange;
+    margin: 3rem auto 1rem;
+
 }

@@ -1,15 +1,19 @@
-import './cart.css'
-
+import { appData, header, IProduct } from "../../index"
+import { getCartArr } from "../../utils/getCartArr"
+import { ICartItem } from "../Main/main"
+import './cart.scss'
 export class Cart {
     public cartContainer: HTMLDivElement | undefined
-    // Кол-во и ID товаров, кол-во товаров на странице, промо коды 
-    // изменение и удаление
-    // предусмотреть очистку main__container при отображении
-    // определение переменных
+    public cartEmpty: HTMLDivElement | undefined
+
+    price: HTMLSpanElement | undefined
+    cartCnt: HTMLSpanElement | undefined
 
     // create cart page 
     constructor () {}
-    public createCartContainer() {
+    
+    
+    public createCartContainer(newData?:IProduct) {
         const cartContainer = document.createElement('div')
         const cartWrapper = document.createElement('div')
         cartWrapper.classList.add('cart__wrapper')
@@ -23,7 +27,7 @@ export class Cart {
 
     public createProductsContainer() {
         const productsContainer = document.createElement('div')
-        productsContainer.classList.add('products__container')
+        productsContainer.classList.add('productsCart__container')
         productsContainer.append(this.createProductControl(), 
         this.createProductsItems())
 
@@ -50,8 +54,6 @@ export class Cart {
         const promoResTxt = document.createElement('span')
         const promoTestTxt = document.createElement('span')
         const buttonCartBuy = document.createElement('button')
-
-
 
         summaryName.classList.add('summary')
         summaryName.textContent = 'Summary'
@@ -83,7 +85,7 @@ export class Cart {
         promoTestTxt.textContent = `Promo for test: 'RS'`
         buttonCartBuy.classList.add('button_buy')
         buttonCartBuy.textContent ='BUY NOW'
-        
+          
         summaryContainer.classList.add('summary__container')
         summaryContainer.append(summaryName)
         summaryContainer.append(totalPrice)
@@ -153,32 +155,38 @@ export class Cart {
     }
 // - - -      тут заполнить items товары - - -
     public createProductsItems () {
+        let cartArr = getCartArr()
+        let counterCart = cartArr.length
         const productsItems = document.createElement('div')
         productsItems.classList.add('product__items_cart')
-        productsItems.append(this.createCartItem(),
-        this.createCartItem(),
-        this.createCartItem())
+        for (var i = 1; i <= counterCart; i++) {
+             
+        productsItems.append(this.createCartItem(i))
 
+        }
         return productsItems
     }
 // заполняем строку товара
-    public createCartItem () {
+    public createCartItem (idIt?:number) {
+        let cartArr = getCartArr()
+        let idProduct = cartArr[Number(idIt) - 1].id 
         const cartItem = document.createElement('div')
         const item_i = document.createElement('div')
         const itemNumber = document.createElement('span')
 
         cartItem.classList.add('cart__item')
-        item_i.classList.add('item_i')
-        itemNumber.textContent = '1' //---------------
+        item_i.classList.add(`item_${idIt}`)
+        itemNumber.textContent = `${idIt}` //number product in cart
 
         cartItem.append(item_i)
         item_i.append(itemNumber)
-        cartItem.append(this.createItemInfo(), this.createItemControl())
+        console.log('idStor', idProduct )
+        cartItem.append(this.createItemInfo(idProduct), this.createItemControl())
         
         return cartItem
     }
 
-    public createItemInfo () {
+    public createItemInfo (idp?:number) {
         const itemInfo = document.createElement('div')
         const itemImage = document.createElement('img')
         const itemsDetails = document.createElement('div')
@@ -192,6 +200,11 @@ export class Cart {
         const itemDiscount = document.createElement('div')
         const itemDiscountTxt = document.createElement('span')
         
+        console.log('iteminfo',idp)
+           
+       
+        console.log(appData)
+
         itemInfo.classList.add('item_info')
         itemImage.classList.add('item_image')
         itemImage.alt = 'image'
@@ -207,7 +220,7 @@ export class Cart {
         itemRating.classList.add('item_rating')
         itemRatingTxt.textContent = 'Rating: 4.69' //------------------
         itemDiscount.classList.add('item_discount')
-        itemDiscountTxt.textContent = 'Discount: 12.96%'
+        itemDiscountTxt.textContent = 'Discount: 12.96%' //-------------------
    
         itemInfo.append(itemImage)
         itemInfo.append(itemsDetails)
@@ -258,4 +271,38 @@ export class Cart {
         return itemControl
 
     }
+    //-----------------------------------------------test section
+    public CartLayout(newData: IProduct[]){
+        let cartArr = getCartArr()
+        let counterCart = cartArr.length
+        console.log('Hi! I am Cart!')
+        console.log(cartArr)
+        console.log(newData[1].description)
+        console.log('appdata', newData[1].thumbnail)
+        
+
+                
+        if (cartArr.length > 0){
+            console.log('cartContainer')
+            document.body.append(this.createCartContainer())
+     
+
+        } else {
+            console.log('cartEmpty')
+            document.body.append(this.createCartEmpty())  
+        }
+    
+        return this.CartLayout
+    
+    }
+
+    public createCartEmpty() {
+        const cartEmpty = document.createElement('div')
+        const cartEmptyTxt = document.createElement('h2')
+        cartEmpty.classList.add('cart__empty')
+        cartEmpty.textContent = 'cart empty'
+
+        return cartEmpty
+    }
+
 }
