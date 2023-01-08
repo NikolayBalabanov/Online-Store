@@ -1,6 +1,6 @@
 import { appData, header, IProduct } from "../../index"
 import { getCartArr } from "../../utils/getCartArr"
-import { ICartItem } from "../Main/main"
+import { ICartItem, Main } from "../Main/main"
 import './cart.scss'
 export class Cart {
     public cartContainer: HTMLDivElement | undefined
@@ -272,19 +272,29 @@ export class Cart {
 
     }
     //-----------------------------------------------test section
-    public CartLayout(newData: IProduct[]){
+    public CartLayout(container: HTMLElement | undefined, newData?: IProduct[]) {
+       
+            if (container) {
+                container.innerHTML = ''
+                container.append(this.createCartContainer())
+               // productContainer.append(this.createLayout(this.urlParse()))
+               // this.fetchProduct(this.urlParse())
+            }
+            return this.CartLayout
+        }
+/*
         let cartArr = getCartArr()
         let counterCart = cartArr.length
         console.log('Hi! I am Cart!')
         console.log(cartArr)
-        console.log(newData[1].description)
-        console.log('appdata', newData[1].thumbnail)
+        //console.log(newData[1].description)
+        //console.log('appdata', newData[1].thumbnail)
         
 
                 
         if (cartArr.length > 0){
             console.log('cartContainer')
-            document.body.append(this.createCartContainer())
+            Main.append(this.createCartContainer())
      
 
         } else {
@@ -295,7 +305,7 @@ export class Cart {
         return this.CartLayout
     
     }
-
+*/
     public createCartEmpty() {
         const cartEmpty = document.createElement('div')
         const cartEmptyTxt = document.createElement('h2')

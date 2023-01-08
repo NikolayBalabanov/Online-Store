@@ -59,7 +59,7 @@ async function fetchData() {
             header.update()
             break
         case '/cart':
-            cart.CartLayout(appData) // проба с передачей appData
+            //cart.CartLayout(appdata) // проба с передачей appData
             // cart.update(appData) метод, обновляющий контент карзины. Может и полностью ререндерить
             header.update()
             break
