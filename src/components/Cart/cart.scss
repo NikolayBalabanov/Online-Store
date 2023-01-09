@@ -189,10 +189,19 @@
     text-align: center;
     margin: 4%;
 }
+
+.result_price {
+    display: none;
+}
+.res_promo {
+    display: none;
+}
+
 .old_price {
-    text-decoration: line-through;
+   /* text-decoration: line-through;*/
 }
 .apply_codes {
+    display: none;
     width: 80%;
     margin: 5% auto;
     border: 1px solid orange;

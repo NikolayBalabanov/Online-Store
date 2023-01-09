@@ -54,12 +54,18 @@ export class Cart {
         const promoResTxt = document.createElement('span')
         const promoTestTxt = document.createElement('span')
         const buttonCartBuy = document.createElement('button')
+        
 
         summaryName.classList.add('summary')
         summaryName.textContent = 'Summary'
         totalPrice.classList.add('total_price')
         totalPriceTxt.classList.add('total_price')
-        totalPriceTxt.textContent = `Products:  ${7}` //--------------
+        let cartArr = getCartArr()
+        if (cartArr.length>0) {
+            totalPriceTxt.textContent = `Products:  ${cartArr.length}` 
+        } else {        
+            totalPriceTxt.textContent = `Products:  ${0}`
+         } 
         totalPriceSumm.classList.add('total_price', 'old_price')
         totalPriceSummTxt.classList.add('total_price')
         totalPriceSummTxt.textContent = `Total:  €${'13549.00'}` //--------------
@@ -295,19 +301,19 @@ export class Cart {
             console.log('button+','idProduct',idp, 'idStorage', idstorage, 'CountItem', countItem)
             if (cartArr.length > 0) {
                 if (idstorage) {
-                    let elItems = cartArr[idstorage]
+                    let elItems = cartArr[idstorage] //
                     //console.log('elemet',idstorage, 'raven', element)
                     //console.log(element['count'])
                     if (elItems['count']) {
                         elItems['count'] +=1
                         localStorage.setItem('cart', JSON.stringify(cartArr))
-                        
+                        this.UpdateCart()
                     }
 
                     // не может быть больше стокового кол-ва
                     // обновляем
                     
-                    //header.update()
+                    header.update()
                     return
                 }
             }
@@ -320,16 +326,18 @@ export class Cart {
             console.log('button-','idProduct',idp, 'idStorage', idstorage, 'CountItem', countItem)
             if (cartArr.length > 0) {
                 if (idstorage) {
-                    //console.log('test', cartArr[idstorage].count)
+                  
                     let elItem = cartArr[idstorage]
                     if (elItem['count']) {
                         elItem['count'] -=1              
                         if (elItem['count'] === 0) {
                         cartArr.splice(idstorage, 1)}
                         localStorage.setItem('cart', JSON.stringify(cartArr))
+
+                        // update cart()
                         }
                     // если 0 удаляем
-                    //header.update()
+                    header.update()
                     return
                 }
             }
@@ -347,23 +355,15 @@ export class Cart {
        
             if (container) {
                 container.innerHTML = ''
-          //      container.append(this.createCartContainer())
-          //  }
-          //  return this.CartLayout
-       // }
-
-        let cartArr = getCartArr()
-        //let counterCart = cartArr.length
+                let cartArr = getCartArr()
                 if (cartArr.length > 0){
-                 container.append(this.createCartContainer())
-     
-        } else {
-            console.log('cartEmpty')
-            container.append(this.createCartEmpty())  
-        }
+                container.append(this.createCartContainer())
+                } else {
+                    console.log('cartEmpty')
+                    container.append(this.createCartEmpty()) 
+                    }
             }
-        return this.CartLayout
-    
+        return this.CartLayout   
     }
 
     public createCartEmpty() {
@@ -374,30 +374,13 @@ export class Cart {
 
         return cartEmpty
     }
-
-    public updateCart() {
+//  что-то для обновления страницы 
+    public UpdateCart() {
         if (this.cartContainer) {
             this.cartContainer.innerHTML = ''
-            this.createCartContainer()
+            
         }
-        return
+        return this.UpdateCart
     }
     
 }
-/*
-public update(data: IProduct[] | null) {
-        if (this.mainContainer) {
-            this.mainContainer.innerHTML = ''
-            this.createProductsLayout()
-        }
-        if (data && this.productsContainer && this.filtersContainer) {
-            header.update()
-
-else {
-    if (this.mainContainer) {
-        this.mainContainer.innerHTML = ''
-        this.createProductsLayout()
-        if (data) this.update(data)
-    }
-
-    */
