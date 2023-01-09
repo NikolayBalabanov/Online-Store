@@ -345,12 +345,10 @@ export class Cart {
              
         })
 
-
-
         return itemControl
 
     }
-    //-----------------------------------------------test section
+    //-----------------------------------------------section
     public CartLayout(container: HTMLElement | undefined, newData?: IProduct[]) {
        
             if (container) {
