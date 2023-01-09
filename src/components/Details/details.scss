@@ -3,6 +3,10 @@
     height: -moz-fit-content;
     height: fit-content;
 
+    @media (max-width: 900px) {
+        width: 90%;
+    }
+
     &__not-found {
         margin: auto;
         display: flex;
@@ -20,11 +24,15 @@
     }
 
     &__legend {
-        margin: 3% auto;
+        margin: 15px auto;
         display: flex;
         align-items: center;
         justify-content: space-evenly;
         width: 100%;
+
+        @media (max-width: 900px) {
+            flex-wrap: wrap;
+        }
     }
 
     &__details {
@@ -34,11 +42,17 @@
         background: rgba(24,26,28,.5);
         overflow: hidden;
     }
+
+    &__link {
+        @media (max-width: 900px) {
+            font-size: 10px;
+        }
+    }
 }
 
 .details {
     &__title {
-        padding: .5%;
+        padding: 5px;
         width: 100%;
         font-size: 150%;
         text-align: center;
@@ -47,15 +61,24 @@
     }
 
     &__info {
-        padding: .5%;
+        padding: 5px;
         display: flex;
         width: 100%;
+
+        @media (max-width: 900px) {
+            flex-direction: column;
+        }
     }
 }
 
 .slider {
     width: 40%;
     display: flex;
+
+    @media (max-width: 900px) {
+        margin-bottom: 5px;
+        width: 100%;
+    }
 
     &__previews {
         width: 25%;
@@ -87,6 +110,11 @@
 .descr {
     width: 40%;
 
+    @media (max-width: 900px) {
+        margin-bottom: 5px;
+        width: 100%;
+    }
+
     &__wrap {
         margin: 1% auto;
         overflow: hidden;
@@ -114,6 +142,10 @@
     justify-content: center;
     text-align: center;
 
+    @media (max-width: 900px) {
+        width: 100%;
+    }
+
     &__content {
         width: 90%;
         font-size: 200%;
@@ -137,5 +169,9 @@
         border-radius: 0.3rem;
         background: #9a3535;
         cursor: pointer;
+
+        @media (max-width: 900px) {
+            padding: 5px 0;
+        }
     }
 }

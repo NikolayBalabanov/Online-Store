@@ -1,5 +1,4 @@
 .footer {
-    background-color: var(--color-black);
 
     &__container {
         padding-top: 15px;
@@ -8,7 +7,14 @@
         border-right: 2px solid orange;
         border-left: 2px solid orange;
         border-radius: 50px 50px 0 0;
+        background-color: var(--color-black);
         color: var(--color-orange);
+
+        @media (max-width: 550px) {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            border-radius: 25px 25px 0 0;
+        }
     }
 
     &__items {
@@ -43,10 +49,19 @@
             transition: fill 0.15s ease-in-out;
             fill: var(--color-black);
         }
+
+        @media (max-width: 550px) {
+            width: 50px;
+            height: 22px;
+        }
     }
 
     &__date {
         margin: 0;
+
+        @media (max-width: 550px) {
+            font-size: 10px;
+        }
     }
 
     &__link {
@@ -75,6 +90,10 @@
         &:hover {
             text-shadow: 0 0 10px rgb(88 68 68), 0 0 5px red, 0 0 10px red, 0 0 15px red;
             transition: text-shadow 0.15s ease-in-out;
+        }
+
+        @media (max-width: 550px) {
+            font-size: 10px;
         }
     }
 }

@@ -11,5 +11,10 @@
         border: 2px solid orange;
         border-radius: 1rem;
         background: #181a1c;
+
+        @media (max-width: 500px) {
+            font-size: 21px;
+        }
     }
+
 }

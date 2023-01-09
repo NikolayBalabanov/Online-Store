@@ -119,7 +119,28 @@ export class Main {
         this.priceSliderList = priceSliderWrap
         this.stockSliderList = stockSliderWrap
 
-        filtersWrap.append(filtersControls, categoryFilterWrap.wrap, brandFilterWrap.wrap, priceSliderWrap, stockSliderWrap)
+        const burgerWrap = document.createElement('div')
+        burgerWrap.classList.add('burger__wrap')
+        const filtersBurger = document.createElement('button')
+        const burgerLine = document.createElement('span')
+        filtersBurger.classList.add('burger')
+        burgerLine.classList.add('burger__line')
+
+        filtersBurger.append(burgerLine)
+        burgerWrap.append(filtersControls, categoryFilterWrap.wrap, brandFilterWrap.wrap, priceSliderWrap, stockSliderWrap)
+        filtersWrap.append(filtersBurger, burgerWrap)
+
+        filtersBurger.addEventListener('click', () => {
+            filtersBurger.classList.toggle('burger--active')
+            burgerWrap.classList.toggle('burger__wrap--active')
+        })
+    
+        window.addEventListener('click', (e) => {
+        if (e.target === filtersWrap) {
+            filtersBurger.classList.remove('burger--active')
+            burgerWrap.classList.remove('burger__wrap--active')
+        }
+        })
 
         return filtersWrap
     }
@@ -267,7 +288,7 @@ export class Main {
         sortSelect.classList.add('controls__sort')
         optionPlaceholder.classList.add('controls__placeholder')
 
-        found.classList.add('controls__found') //TODO: common css class for text?
+        found.classList.add('controls__found') 
         searchBar.classList.add('controls__search-bar')
         searchInput.classList.add('controls__search')
 
@@ -633,6 +654,12 @@ export class Main {
     private renderCards(newData: IProduct[], isBig: boolean) {
         let cartArr = getCartArr()
         if (this.cardsContainer) this.cardsContainer.innerHTML = ''
+        if (isBig && this.cardsContainer) {
+            this.cardsContainer.classList.add('cards--big')
+        } else {
+            if (this.cardsContainer)
+            this.cardsContainer.classList.remove('cards--big')
+        }
         newData.forEach((el: IProduct) => {
             const isExist = (element: ICartItem) => element.id === el.id
             let isInCart = cartArr.find(isExist)
