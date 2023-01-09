@@ -4,6 +4,7 @@ import { Router } from "./router/router";
 import { Header } from "./components/Header/header";
 import { Footer } from './components/Footer/footer';
 import { Main } from './components/Main/main';
+import { Cart } from './components/Cart/cart';
 import { Details } from './components/Details/details';
 import { Modal } from './components/Modal/madal';
 
@@ -34,11 +35,13 @@ export let isModalOpen = { state: false }
 export const header = new Header()
 const footer = new Footer()
 export const main = new Main()
+export const cart = new Cart()
 export const details = new Details()
 export const modal = new Modal()
 
 document.body.append(header.createLayout())
 document.body.append(main.createMainContainer())
+//document.body.append(cart.createCartContainer())
 document.body.append(footer.createLayout())
 main.createProductsLayout()
 async function fetchData() {
@@ -56,7 +59,9 @@ async function fetchData() {
             header.update()
             break
         case '/cart':
+            //cart.CartLayout(appdata) // проба с передачей appData
             // cart.update(appData) метод, обновляющий контент карзины. Может и полностью ререндерить
+            cart.CartLayout(main.mainContainer)
             header.update()
             break
         default:

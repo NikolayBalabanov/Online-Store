@@ -231,10 +231,10 @@ export class Details {
                     header.update()
                     return
                 }
-                cartArr.push({ id: product.id, price: product.price })
+                cartArr.push({ id: product.id, price: product.price, count: 1 }) // add count=1 for default
                 localStorage.setItem('cart', JSON.stringify(cartArr))
             } else {
-                cartArr.push({ id: product.id, price: product.price })
+                cartArr.push({ id: product.id, price: product.price, count: 1 })
                 localStorage.setItem('cart', JSON.stringify(cartArr))
             }
             addToCart.textContent = 'DROP FROM CART'
@@ -249,10 +249,10 @@ export class Details {
                 if (isInCart) {
                     return
                 }
-                cartArr.push({ id: product.id, price: product.price })
+                cartArr.push({ id: product.id, price: product.price, count: 1 })
                 localStorage.setItem('cart', JSON.stringify(cartArr))
             } else {
-                cartArr.push({ id: product.id, price: product.price })
+                cartArr.push({ id: product.id, price: product.price, count: 1 })
                 localStorage.setItem('cart', JSON.stringify(cartArr))
             }
             header.update()
