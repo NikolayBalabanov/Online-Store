@@ -300,14 +300,15 @@ export class Cart {
 
             console.log('button+','idProduct',idp, 'idStorage', idstorage, 'CountItem', countItem)
             if (cartArr.length > 0) {
-                if (idstorage) {
-                    let elItems = cartArr[idstorage] //
-                    //console.log('elemet',idstorage, 'raven', element)
-                    //console.log(element['count'])
+                let index =Number(idstorage)
+                    let elItems = cartArr[index] //
+                    //console.log('elemet',index, 'raven', elItems)
+                    //console.log(cartArr)
+                    //console.log(elItems['count'])
                     if (elItems['count']) {
                         elItems['count'] +=1
                         localStorage.setItem('cart', JSON.stringify(cartArr))
-                        this.UpdateCart()
+                     //   this.UpdateCart()
                     }
 
                     // не может быть больше стокового кол-ва
@@ -315,7 +316,8 @@ export class Cart {
                     
                     header.update()
                     return
-                }
+              //  }
+                
             }
             
              
@@ -325,13 +327,13 @@ export class Cart {
 
             console.log('button-','idProduct',idp, 'idStorage', idstorage, 'CountItem', countItem)
             if (cartArr.length > 0) {
-                if (idstorage) {
-                  
-                    let elItem = cartArr[idstorage]
+                let index =Number(idstorage)
+               
+                    let elItem = cartArr[index]
                     if (elItem['count']) {
                         elItem['count'] -=1              
                         if (elItem['count'] === 0) {
-                        cartArr.splice(idstorage, 1)}
+                        cartArr.splice(index, 1)}
                         localStorage.setItem('cart', JSON.stringify(cartArr))
 
                         // update cart()
@@ -339,7 +341,7 @@ export class Cart {
                     // если 0 удаляем
                     header.update()
                     return
-                }
+                
             }
             
              
