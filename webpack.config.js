@@ -3,21 +3,23 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = (env) => ({
     entry: path.resolve(__dirname, './src/index.ts'),
     output: {
         filename: 'index.js',
-        // path: path.resolve(__dirname, '../dist'),
-        publicPath: '/',
+        path: path.resolve(__dirname, '../dist'),
+        // publicPath: '/',
+        assetModuleFilename: 'assets/img/[name][ext]',
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js'],
+        extensions: ['.ts', '.js'],
     },
     module: {
       rules: [
         { 
-            test: /\.tsx?$/, 
+            test: /\.ts$/i, 
             loader: 'ts-loader', 
             exclude: /node_modules/ 
         },
@@ -45,7 +47,7 @@ module.exports = (env) => ({
           type: 'asset/resource',
         },
         {
-          test: /\.(woff(2)?|eot|ttf|otf)$/,
+          test: /\.(woff(2)?|eot|ttf|otf)$/i,
           type: 'asset/inline',
         },
       ],
@@ -103,6 +105,14 @@ module.exports = (env) => ({
       new MiniCssExtractPlugin({
         filename: 'main.[contenthash].css',
       }),
-      new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
+      new CleanWebpackPlugin(),
+      new CopyPlugin({
+        patterns: [
+            {
+                from: path.resolve(__dirname, 'src', 'assets'),
+                to: path.resolve(__dirname, '../dist', 'assets'),
+            },
+        ],
+      }),
     ],
   })
