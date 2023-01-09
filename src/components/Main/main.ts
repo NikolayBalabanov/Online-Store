@@ -893,10 +893,6 @@ export class Main {
         }
     }
     public update(data: IProduct[] | null) {
-        if (this.mainContainer) {
-            this.mainContainer.innerHTML = ''
-            this.createProductsLayout()
-        }
         if (data && this.productsContainer && this.filtersContainer) {
             header.update()
             this.parentData = data
@@ -937,13 +933,6 @@ export class Main {
             if (this.curData.length === 0 && this.notFound) {
                 this.notFound.classList.remove('is-hidden')
                 this.found ? this.found.textContent = 'Found: 0' : ''
-            }
-        }
-        else {
-            if (this.mainContainer) {
-                this.mainContainer.innerHTML = ''
-                this.createProductsLayout()
-                if (data) this.update(data)
             }
         }
     }

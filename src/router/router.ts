@@ -47,6 +47,10 @@ export function Router() {
         // in following cases instead console.log() we can set page render function
         // query params?
         if (location === KnownRoutes.HomePage) {
+            if (main.mainContainer) {
+                main.mainContainer.innerHTML = ''
+                main.createProductsLayout()
+            }
             main.update(appData)
             modal.remove()
         } else if (location === KnownRoutes.Cart) {
