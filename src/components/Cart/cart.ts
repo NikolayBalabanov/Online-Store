@@ -1,4 +1,4 @@
-import { appData, header, IProduct } from "../../index"
+import { appData, header, IProduct, main, modal } from "../../index"
 import { getCartArr } from "../../utils/getCartArr"
 import { ICartItem, Main } from "../Main/main"
 import './cart.scss'
@@ -62,13 +62,15 @@ export class Cart {
         totalPriceTxt.classList.add('total_price')
         let cartArr = getCartArr()
         if (cartArr.length>0) {
-            totalPriceTxt.textContent = `Products:  ${cartArr.length}` 
+            const cnt = cartArr.reduce((acc, cur) => acc + cur.count, 0).toString()
+            totalPriceTxt.textContent = `Products:  ${cnt}` 
         } else {        
             totalPriceTxt.textContent = `Products:  ${0}`
          } 
         totalPriceSumm.classList.add('total_price', 'old_price')
         totalPriceSummTxt.classList.add('total_price')
-        totalPriceSummTxt.textContent = `Total:  €${'13549.00'}` //--------------
+        const total = cartArr.reduce((acc, cur) => acc + cur.price * cur.count, 0).toString()
+        totalPriceSummTxt.textContent = `Total:  €${total}.00` //--------------
         resultPriceSumm.classList.add('result_price', 'total_price')
         resulPriceSummTxt.classList.add('result_price', 'total_price')
         resulPriceSummTxt.textContent= `Total:  €${'10549.00'}` //--------------
@@ -111,6 +113,9 @@ export class Cart {
         promoRes.append(promoResTxt)
         summaryContainer.append(promoTestTxt)
         summaryContainer.append(buttonCartBuy)
+        buttonCartBuy.addEventListener('click', () => {
+            modal.render()
+        })
 
         return summaryContainer
 
@@ -305,6 +310,7 @@ export class Cart {
                     //console.log('elemet',index, 'raven', elItems)
                     //console.log(cartArr)
                     //console.log(elItems['count'])
+                    
                     if (elItems['count']) {
                         elItems['count'] +=1
                         localStorage.setItem('cart', JSON.stringify(cartArr))
@@ -313,7 +319,7 @@ export class Cart {
 
                     // не может быть больше стокового кол-ва
                     // обновляем
-                    
+                    this.CartLayout(main.mainContainer)
                     header.update()
                     return
               //  }
@@ -339,6 +345,7 @@ export class Cart {
                         // update cart()
                         }
                     // если 0 удаляем
+                    this.CartLayout(main.mainContainer)
                     header.update()
                     return
                 
@@ -373,14 +380,6 @@ export class Cart {
         cartEmpty.textContent = 'Cart is empty'
 
         return cartEmpty
-    }
-//  что-то для обновления страницы 
-    public UpdateCart() {
-        if (this.cartContainer) {
-            this.cartContainer.innerHTML = ''
-            
-        }
-        return this.UpdateCart
     }
     
 }

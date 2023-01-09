@@ -66,8 +66,8 @@ export class Header {
     public update() {
         const cartArr = getCartArr()
         if (this.price && this.cartCnt && cartArr.length > 0) {
-            const cnt = cartArr.length.toString()
-            const price = cartArr.map(el => el.price).reduce((acc, cur) => acc + cur).toString()
+            const cnt = cartArr.reduce((acc, cur) => acc + cur.count, 0).toString()
+            const price = cartArr.reduce((acc, cur) => acc + cur.price * cur.count, 0).toString()
             this.price.textContent = `€${price}.00`
             this.cartCnt.textContent = `${cnt}`
         } else {

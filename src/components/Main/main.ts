@@ -29,7 +29,7 @@ enum FiltersFields {
 export interface ICartItem {
     id: number
     price: number
-    count?: number
+    count: number
 }
 
 interface ICategory {
