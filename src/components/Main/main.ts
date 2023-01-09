@@ -29,6 +29,7 @@ enum FiltersFields {
 export interface ICartItem {
     id: number
     price: number
+    count?: number
 }
 
 interface ICategory {
@@ -720,10 +721,10 @@ export class Main {
                         header.update()
                         return
                     }
-                    cartArr.push({ id: el.id, price: el.price })
+                    cartArr.push({ id: el.id, price: el.price, count: 1 })
                     localStorage.setItem('cart', JSON.stringify(cartArr))
                 } else {
-                    cartArr.push({ id: el.id, price: el.price })
+                    cartArr.push({ id: el.id, price: el.price, count: 1 })
                     localStorage.setItem('cart', JSON.stringify(cartArr))
                 }
                 cardCartBtn.textContent = 'DROP FROM CART'

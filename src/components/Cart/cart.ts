@@ -13,7 +13,7 @@ export class Cart {
     constructor () {}
     
     
-    public createCartContainer(newData?:IProduct) {
+    public createCartContainer() {
         const cartContainer = document.createElement('div')
         const cartWrapper = document.createElement('div')
         cartWrapper.classList.add('cart__wrapper')
@@ -170,6 +170,7 @@ export class Cart {
     public createCartItem (idIt?:number) {
         let cartArr = getCartArr()
         let idProduct = cartArr[Number(idIt) - 1].id 
+        let countItem = cartArr[Number(idIt) - 1].count
         const cartItem = document.createElement('div')
         const item_i = document.createElement('div')
         const itemNumber = document.createElement('span')
@@ -181,13 +182,16 @@ export class Cart {
         cartItem.append(item_i)
         item_i.append(itemNumber)
         console.log('idStor', idProduct )
-        cartItem.append(this.createItemInfo(idProduct), this.createItemControl())
+        cartItem.append(this.createItemInfo(idProduct-1), 
+        this.createItemControl((idProduct-1),(Number(idIt)-1),countItem)
+        )
         
         return cartItem
     }
 
     public createItemInfo (idp?:number) {
         const itemInfo = document.createElement('div')
+        const aHref = document.createElement('a')
         const itemImage = document.createElement('img')
         const itemsDetails = document.createElement('div')
         const itemTitle = document.createElement('div')
@@ -200,30 +204,38 @@ export class Cart {
         const itemDiscount = document.createElement('div')
         const itemDiscountTxt = document.createElement('span')
         
-        console.log('iteminfo',idp)
-           
-       
-        console.log(appData)
-
         itemInfo.classList.add('item_info')
+        aHref.classList.add('item_info_href')
         itemImage.classList.add('item_image')
         itemImage.alt = 'image'
-        itemImage.src = 'https://i.dummyjson.com/data/products/1/thumbnail.jpg' // присвоить переменную
         itemsDetails.classList.add('item_details')
         itemTitle.classList.add('item_title')
         itemName.classList.add('item_name')
-        itemName.textContent = 'iPhone9' // ------------
         itemDescription.classList.add('item_description')
         itemDescriptionTxt.classList.add('item_description_txt')
-        itemDescriptionTxt.textContent = 'An apple mobile which is nothing like apple' // -----------
         itemOther.classList.add('item_other')
         itemRating.classList.add('item_rating')
-        itemRatingTxt.textContent = 'Rating: 4.69' //------------------
         itemDiscount.classList.add('item_discount')
-        itemDiscountTxt.textContent = 'Discount: 12.96%' //-------------------
-   
-        itemInfo.append(itemImage)
-        itemInfo.append(itemsDetails)
+        aHref.href= `${window.location.host}/product-details/${idp}` // ! Patch for Page ProductDetail
+
+        // Update info items from appData[Number(idp) - testing -
+        if (appData) {
+        itemImage.src = appData[Number(idp)].thumbnail 
+        itemName.textContent = appData[Number(idp)].title
+        itemDescriptionTxt.textContent = appData[Number(idp)].description 
+        itemRatingTxt.textContent = `Rating: ${appData[Number(idp)].rating.toString()}` 
+        itemDiscountTxt.textContent = `Discount: ${appData[Number(idp)].discountPercentage.toString()}%` 
+        } else {
+
+            itemName.textContent = 'Database is updating..' // ------------
+            itemDescriptionTxt.textContent = 'Please click to homepage Online-Store' // -----------
+            //TODO: update appData 
+        }
+
+        
+        itemInfo.append(aHref) ///
+        aHref.append(itemImage)
+        aHref.append(itemsDetails) //
         itemsDetails.append(itemTitle)
         itemTitle.append(itemName)
         itemsDetails.append(itemDescription)
@@ -236,7 +248,7 @@ export class Cart {
 
         return itemInfo
     }
-    public createItemControl() {
+    public createItemControl(idp?:number, idstorage?:number, countItem?:number) {
         const itemControl = document.createElement('div')
         const stockControl = document.createElement('div')
         const stockControlTxt = document.createElement('span')
@@ -249,15 +261,22 @@ export class Cart {
 
         itemControl.classList.add('item__control')
         stockControl.classList.add('stock_control')
-        stockControlTxt.textContent = 'Stock: 94' ////-----------------
         stockButtonControl.classList.add('stock_button_control')
         stockButtonPlus.classList.add('stock_plus', 'stock_button')
         stockButtonPlus.textContent = '+'
-        stockInfo.textContent = '1' //---------------------
         stockButtonMinus.classList.add('stock_minus', 'stock_button')
         stockButtonMinus.textContent = '-'
         itemAmountControl.classList.add('amount_control')
-        itemAmount.textContent = '€549.00'  // -------------------
+
+        // Update info items from appData[Number(idp)] - testing -
+        
+
+        if (appData&&countItem) {
+            stockControlTxt.textContent = `Stock: ${appData[Number(idp)].stock-countItem}` // - отнимаем N и итого---
+            stockInfo.textContent = `${countItem}` //---------------------перемен кол-во из сторадж
+            itemAmount.textContent = `€${(appData[Number(idp)].price)*countItem}.00` // умножаем на N сумма-----------
+            }
+        
 
         itemControl.append(stockControl)
         stockControl.append(stockControlTxt)
@@ -268,6 +287,45 @@ export class Cart {
         itemControl.append(itemAmountControl)
         itemAmountControl.append(itemAmount)
 
+        // - controls
+        let cartArr = getCartArr()
+        stockButtonPlus.addEventListener('click', () => {
+                
+
+            console.log('button+','idProduct',idp, 'idStorage', idstorage, 'CountItem', countItem)
+            if (cartArr.length > 0) {
+                if (idstorage) {
+                    console.log('test', cartArr[idstorage].count)
+                    let newCount = Number(cartArr[idstorage].count)+1
+                    // не может быть больше стокового кол-ва
+                    //localStorage.setItem('cart', JSON.stringify('id:'[idstorage], 'count:' newCount))
+                    //header.update()
+                    return
+                }
+            }
+            
+             
+        })
+        stockButtonMinus.addEventListener('click', () => {
+                
+
+            console.log('button-','idProduct',idp, 'idStorage', idstorage, 'CountItem', countItem)
+            if (cartArr.length > 0) {
+                if (idstorage) {
+                    console.log('test', cartArr[idstorage].count)
+                    let newCount = Number(cartArr[idstorage].count)-1
+                    // если 0 удаляем
+                    //localStorage.setItem('cart', JSON.stringify('id:'[idstorage], 'count:' newCount))
+                    //header.update()
+                    return
+                }
+            }
+            
+             
+        })
+
+
+
         return itemControl
 
     }
@@ -277,8 +335,7 @@ export class Cart {
             if (container) {
                 container.innerHTML = ''
                 container.append(this.createCartContainer())
-               // productContainer.append(this.createLayout(this.urlParse()))
-               // this.fetchProduct(this.urlParse())
+
             }
             return this.CartLayout
         }
@@ -287,16 +344,12 @@ export class Cart {
         let counterCart = cartArr.length
         console.log('Hi! I am Cart!')
         console.log(cartArr)
-        //console.log(newData[1].description)
-        //console.log('appdata', newData[1].thumbnail)
-        
-
+    
                 
         if (cartArr.length > 0){
             console.log('cartContainer')
             Main.append(this.createCartContainer())
      
-
         } else {
             console.log('cartEmpty')
             document.body.append(this.createCartEmpty())  
@@ -314,5 +367,46 @@ export class Cart {
 
         return cartEmpty
     }
+/*/ -------------------------
+    addToCart.addEventListener('click', () => {
+            isInCart = cartArr.find(isExist)
+            if (cartArr.length > 0) {
+                if (isInCart) {
+                    cartArr = cartArr.filter((element) => element.id !== product.id)
+                    localStorage.setItem('cart', JSON.stringify(cartArr))
+                    addToCart.textContent = 'ADD TO CART'
+                    header.update()
+                    return
+                }
+                cartArr.push({ id: product.id, price: product.price, count: 1 }) // add count=1 for default
+                localStorage.setItem('cart', JSON.stringify(cartArr))
+            } else {
+                cartArr.push({ id: product.id, price: product.price, count: 1 })
+                localStorage.setItem('cart', JSON.stringify(cartArr))
+            }
+            addToCart.textContent = 'DROP FROM CART'
+            header.update()
+        })
+
+*/
+
+
 
 }
+/*
+public update(data: IProduct[] | null) {
+        if (this.mainContainer) {
+            this.mainContainer.innerHTML = ''
+            this.createProductsLayout()
+        }
+        if (data && this.productsContainer && this.filtersContainer) {
+            header.update()
+
+else {
+    if (this.mainContainer) {
+        this.mainContainer.innerHTML = ''
+        this.createProductsLayout()
+        if (data) this.update(data)
+    }
+
+    */
