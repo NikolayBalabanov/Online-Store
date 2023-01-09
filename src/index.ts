@@ -61,6 +61,7 @@ async function fetchData() {
         case '/cart':
             //cart.CartLayout(appdata) // проба с передачей appData
             // cart.update(appData) метод, обновляющий контент карзины. Может и полностью ререндерить
+            cart.CartLayout(main.mainContainer)
             header.update()
             break
         default:

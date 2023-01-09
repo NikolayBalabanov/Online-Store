@@ -73,7 +73,7 @@ export class Cart {
         totalPriceSummTxt.textContent = `Total:  €${total}.00` //--------------
         resultPriceSumm.classList.add('result_price', 'total_price')
         resulPriceSummTxt.classList.add('result_price', 'total_price')
-        resulPriceSummTxt.textContent= `Total:  €${'10549.00'}` //--------------
+        resulPriceSummTxt.textContent= `Total:  €${'000.00'}` //--------------
         applyCodes.classList.add('apply_codes')
         applyCodesTxt.classList.add('apply_txt')
         applyCodesTxt.textContent = 'Applied codes'
@@ -143,7 +143,7 @@ export class Cart {
         pageButtonRight.classList.add('limit_page_input', 'limit_button2')
         pageNumber.classList.add('page_number')
       
-        // Присвоить переменную для ввода input +
+        // pageItems - число товаров на странице
         // pageNumber - число страниц товаров
 
         titleName.textContent = 'Products In Cart'
