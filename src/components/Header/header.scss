@@ -1,17 +1,22 @@
 .header {
-    background-color: var(--color-black);
-
     &__container {
         padding-top: 15px;
         padding-bottom: 15px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        color: var(--color-orange);
         border-bottom: 2px solid orange;
         border-right: 2px solid orange;
         border-left: 2px solid orange;
         border-radius: 0 0 50px 50px;
-        color: var(--color-orange);
+        background-color: var(--color-black);
+
+        @media (max-width: 550px) {
+            padding-top: 0px;
+            padding-bottom: 0px;
+            border-radius: 0 0 25px 25px;
+        }
     }
 
     &__link {
@@ -29,20 +34,29 @@
     }
 
     &__logo {
+        padding-bottom: 12px;
         display: flex;
         align-items: center;
-        padding-bottom: 5%;
-        font-size: 400%;
+        font-size: 56px;
         line-height: 100%;
         color: var(--color-orange);
         pointer-events: none;
+
+        @media (max-width: 550px) {
+            padding-bottom: 8px;
+            font-size: 30px;
+        }
     }
 
     &__brand {
-        margin-left: 1rem;
+        margin-left: 16px;
         color: var(--color-orange);
-        font-size: 160%;
+        font-size: 26px;
         pointer-events: none;
+
+        @media (max-width: 550px) {
+            display: none;
+        }
     }
 
     &__total-price {
@@ -74,18 +88,35 @@
             transform: scale(0.9);
             transition: transform 0.15s ease-in-out;
         }
+
+        @media (max-width: 1200px) {
+            width: 50px;
+            height: 70px;
+        }
+
+        @media (max-width: 550px) {
+            width: 36px;
+            height: 50px;
+        }
     }
 
     &__cart-cnt {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 30px;
         height: 30px;
         border: 1px solid var(--color-orange);
         border-radius: 50%;
-        font-size: 130%;
+        font-size: 20px;
         line-height: 130%;
-        text-align: center;
-        vertical-align: middle;
         background-color: var(--color-black);
         pointer-events: none;
+
+        @media (max-width: 550px) {
+            width: 20px;
+            height: 20px;
+            font-size: 16px;
+        }
     }
 }

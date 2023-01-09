@@ -18,6 +18,10 @@
         border: 1px solid orange;
         border-radius: 0.5rem;
         background-color: #181a1c;
+
+        @media (max-width: 900px) {
+            width: 90%;
+        }
     }
 
     &__form {
@@ -39,7 +43,7 @@
     }
 
     &__confirm {
-        margin: 5% auto;
+        margin: 4% auto;
         padding: 1%;
         display: block;
         width: 40%;
@@ -90,19 +94,28 @@
         justify-content: center;
         text-align: center;
         color: red; 
+
+        @media (max-width: 768px) {
+            font-size: 90%;
+        }
     }
 }
 
 .credit-card {
     &__info {
         margin: 0 auto;
-        padding: 3% 0px;
+        padding: 15px 0px;
         width: 55%;
         height: 7rem;
         border: 1px solid orange;
         border-radius: 0.5rem;
         background: rgb(0,9,36);
         background: linear-gradient(90deg,rgb(0,9,36) 6%,rgb(9,9,121) 34%,rgb(0,212,255) 100%);
+
+
+        @media (max-width: 768px) {
+            width: 90%;
+        }
     }
 
     &__input-wrap {
@@ -112,10 +125,18 @@
         &:not(:first) {
             font-size: 50%;
         }
+
+        @media (max-width: 768px) {
+            font-size: 100%;
+        }
     }
 
     &__text {
         font-size: 50%; 
+
+        @media (max-width: 768px) {
+            font-size: 70%;
+        }
     }
 
     &__top {
@@ -149,7 +170,10 @@
         border-radius: 0.3rem;
         background: rgb(233,233,202);
         outline: none;
-        
+
+        @media (max-width: 768px) {
+            font-size: 120%;
+        }
     }
 
     &__input-small {
@@ -163,6 +187,10 @@
         padding-top: 1%;
         color: red;
         text-align: center;
+
+        @media (max-width: 768px) {
+            font-size: 90%;
+        }
     }
 }
 
@@ -182,7 +210,7 @@
     &__content {
         position: absolute;
         z-index: 100;
-        padding: 1%;
+        padding: 3%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -193,6 +221,7 @@
     }
 
     &__text { 
+        text-align: center;
         font-weight: 500;
         font-size: 100%;
         color: #000;
