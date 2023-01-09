@@ -242,7 +242,6 @@ export class Details {
         })
 
         buy.addEventListener('click', (e) => {
-            console.log(e)
             isModalOpen.state = true
             isInCart = cartArr.find(isExist)
             if (cartArr.length > 0) {
@@ -256,7 +255,6 @@ export class Details {
                 localStorage.setItem('cart', JSON.stringify(cartArr))
             }
             header.update()
-            console.log('только секунда')
         })
 
         return wrap

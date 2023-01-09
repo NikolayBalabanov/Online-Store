@@ -56,19 +56,14 @@ export function Router() {
         } else if (location === KnownRoutes.Cart) {
             if (main.mainContainer) main.mainContainer.innerHTML = ''
             cart.CartLayout(main.mainContainer)
-            // тут что-то что рендерит разметку карзины
-            console.log('state', isModalOpen.state)
-            // modal.render()
             if (isModalOpen.state) {
                 modal.render()
             }
         } else if (location.includes(KnownRoutes.ProductDetails)) {
-            console.log('location /product-details', location)
             if (main.mainContainer) main.mainContainer.innerHTML = ''
             details.render(main.mainContainer)
             modal.remove()
         } else {
-            console.log('location /404', location)
             notFoundPage(main.mainContainer)
             modal.remove()
         }

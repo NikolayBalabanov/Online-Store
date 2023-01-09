@@ -793,7 +793,6 @@ export class Main {
                     break
             }
         }
-        // console.log('queryObj', Object.keys(queryObj))
         return queryObj
     }
     private sortData(str: string) {
@@ -914,7 +913,7 @@ export class Main {
                 this.search.value = urlParseObj.search ? urlParseObj.search : ''
             }
             if (this.sortSelect) {
-                urlParseObj.search ? '' : this.sortData('Sort options:')
+                urlParseObj.sort ? '' : this.sortData('Sort options:')
             }
             if (urlParseObj.big) {
                 this.renderCards(this.curData, urlParseObj.big === 'true')
@@ -925,7 +924,6 @@ export class Main {
                 this.renderCards(this.curData, true)
                 this.viewBig?.classList.add('controls__view--active')
                 this.viewSmall?.classList.remove('controls__view--active')
-                console.log('viewBig', this.viewBig)
             }
             if (this.curData.length > 0 && this.notFound) {
                 this.notFound.classList.add('is-hidden')

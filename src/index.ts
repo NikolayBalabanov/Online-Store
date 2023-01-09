@@ -41,32 +41,34 @@ export const modal = new Modal()
 
 document.body.append(header.createLayout())
 document.body.append(main.createMainContainer())
-//document.body.append(cart.createCartContainer())
 document.body.append(footer.createLayout())
 main.createProductsLayout()
 async function fetchData() {
-    const response = await fetch('https://dummyjson.com/products?limit=100')
-    const data : IFetchData = await response.json()
-    appData = data.products.map(el => {
-        if (el.brand === "APPle") {
-            el.brand = 'Apple'
-        }
-        return el
-    })
-    switch(window.location.pathname) {
-        case '/':
-            main.update(appData)
-            header.update()
-            break
-        case '/cart':
-            //cart.CartLayout(appdata) // проба с передачей appData
-            // cart.update(appData) метод, обновляющий контент карзины. Может и полностью ререндерить
-            cart.CartLayout(main.mainContainer)
-            header.update()
-            break
-        default:
-            break
+    try {
 
+        const response = await fetch('https://dummyjson.com/products?limit=100')
+        const data : IFetchData = await response.json()
+        appData = data.products.map(el => {
+            if (el.brand === "APPle") {
+                el.brand = 'Apple'
+            }
+            return el
+        })
+        switch(window.location.pathname) {
+            case '/':
+                main.update(appData)
+                header.update()
+                break
+            case '/cart':
+                cart.CartLayout(main.mainContainer)
+                header.update()
+                break
+            default:
+                break
+    
+        }
+    } catch (err) {
+        console.log('Error', err)
     }
 }
 fetchData()
