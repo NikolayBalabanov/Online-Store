@@ -295,10 +295,18 @@ export class Cart {
             console.log('button+','idProduct',idp, 'idStorage', idstorage, 'CountItem', countItem)
             if (cartArr.length > 0) {
                 if (idstorage) {
-                    console.log('test', cartArr[idstorage].count)
-                    let newCount = Number(cartArr[idstorage].count)+1
+                    let elItems = cartArr[idstorage]
+                    //console.log('elemet',idstorage, 'raven', element)
+                    //console.log(element['count'])
+                    if (elItems['count']) {
+                        elItems['count'] +=1
+                        localStorage.setItem('cart', JSON.stringify(cartArr))
+                        
+                    }
+
                     // не может быть больше стокового кол-ва
                     // обновляем
+                    
                     //header.update()
                     return
                 }
@@ -312,8 +320,14 @@ export class Cart {
             console.log('button-','idProduct',idp, 'idStorage', idstorage, 'CountItem', countItem)
             if (cartArr.length > 0) {
                 if (idstorage) {
-                    console.log('test', cartArr[idstorage].count)
-                    let newCount = Number(cartArr[idstorage].count)-1
+                    //console.log('test', cartArr[idstorage].count)
+                    let elItem = cartArr[idstorage]
+                    if (elItem['count']) {
+                        elItem['count'] -=1              
+                        if (elItem['count'] === 0) {
+                        cartArr.splice(idstorage, 1)}
+                        localStorage.setItem('cart', JSON.stringify(cartArr))
+                        }
                     // если 0 удаляем
                     //header.update()
                     return
@@ -333,64 +347,42 @@ export class Cart {
        
             if (container) {
                 container.innerHTML = ''
-                container.append(this.createCartContainer())
+          //      container.append(this.createCartContainer())
+          //  }
+          //  return this.CartLayout
+       // }
 
-            }
-            return this.CartLayout
-        }
-/*
         let cartArr = getCartArr()
-        let counterCart = cartArr.length
-        console.log('Hi! I am Cart!')
-        console.log(cartArr)
-    
-                
-        if (cartArr.length > 0){
-            console.log('cartContainer')
-            Main.append(this.createCartContainer())
+        //let counterCart = cartArr.length
+                if (cartArr.length > 0){
+                 container.append(this.createCartContainer())
      
         } else {
             console.log('cartEmpty')
-            document.body.append(this.createCartEmpty())  
+            container.append(this.createCartEmpty())  
         }
-    
+            }
         return this.CartLayout
     
     }
-*/
+
     public createCartEmpty() {
         const cartEmpty = document.createElement('div')
         const cartEmptyTxt = document.createElement('h2')
         cartEmpty.classList.add('cart__empty')
-        cartEmpty.textContent = 'cart empty'
+        cartEmpty.textContent = 'Cart is empty'
 
         return cartEmpty
     }
-/*/ -------------------------
-    addToCart.addEventListener('click', () => {
-            isInCart = cartArr.find(isExist)
-            if (cartArr.length > 0) {
-                if (isInCart) {
-                    cartArr = cartArr.filter((element) => element.id !== product.id)
-                    localStorage.setItem('cart', JSON.stringify(cartArr))
-                    addToCart.textContent = 'ADD TO CART'
-                    header.update()
-                    return
-                }
-                cartArr.push({ id: product.id, price: product.price, count: 1 }) // add count=1 for default
-                localStorage.setItem('cart', JSON.stringify(cartArr))
-            } else {
-                cartArr.push({ id: product.id, price: product.price, count: 1 })
-                localStorage.setItem('cart', JSON.stringify(cartArr))
-            }
-            addToCart.textContent = 'DROP FROM CART'
-            header.update()
-        })
 
-*/
-
-
-
+    public updateCart() {
+        if (this.cartContainer) {
+            this.cartContainer.innerHTML = ''
+            this.createCartContainer()
+        }
+        return
+    }
+    
 }
 /*
 public update(data: IProduct[] | null) {
