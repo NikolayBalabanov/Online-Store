@@ -638,7 +638,7 @@ export class Main {
             let isInCart = cartArr.find(isExist)
             const card = document.createElement('div')
             const cardWrap = document.createElement('div')
-            const cardTextContent = document.createElement('div')
+            const cardTextContent = document.createElement('a')
             const cardTitle = document.createElement('h3')
             const cardInfo = document.createElement('div')
             const cardCategory = document.createElement('p')
@@ -684,6 +684,7 @@ export class Main {
             cardWrap.append(cardTextContent, cardControls)
             cardWrap.style.background = `url(${el.thumbnail}) 0% 0% / cover`
             cardTextContent.append(cardTitle, cardInfo)
+            cardTextContent.href = `${window.location.pathname}product-details/${el.id}`
             cardTitle.textContent = el.title
             cardInfo.append(cardCategory, cardBrand, cardPrice, cardDiscount, cardRating, cardStock)
             cardCategory.textContent = el.category
