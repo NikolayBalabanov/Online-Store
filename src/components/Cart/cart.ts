@@ -216,7 +216,7 @@ export class Cart {
         itemOther.classList.add('item_other')
         itemRating.classList.add('item_rating')
         itemDiscount.classList.add('item_discount')
-        aHref.href= `${window.location.host}/product-details/${idp}` // ! Patch for Page ProductDetail
+        aHref.href= `/product-details/${Number(idp)+1}` // ! Patch for Page ProductDetail
 
         // Update info items from appData[Number(idp) - testing -
         if (appData) {
@@ -298,7 +298,7 @@ export class Cart {
                     console.log('test', cartArr[idstorage].count)
                     let newCount = Number(cartArr[idstorage].count)+1
                     // не может быть больше стокового кол-ва
-                    //localStorage.setItem('cart', JSON.stringify('id:'[idstorage], 'count:' newCount))
+                    // обновляем
                     //header.update()
                     return
                 }
@@ -315,7 +315,6 @@ export class Cart {
                     console.log('test', cartArr[idstorage].count)
                     let newCount = Number(cartArr[idstorage].count)-1
                     // если 0 удаляем
-                    //localStorage.setItem('cart', JSON.stringify('id:'[idstorage], 'count:' newCount))
                     //header.update()
                     return
                 }
