@@ -4,9 +4,9 @@ import { ICartItem } from "../Main/main"
 import './details.scss'
 
 export class Details {
-    productContainer: HTMLDivElement | undefined
+    public productContainer: HTMLDivElement | undefined
     constructor() {}
-    render(container: HTMLElement | undefined) {
+    public render(container: HTMLElement | undefined) {
         if (container) {
             container.innerHTML = ''
             const productContainer = document.createElement('div')
@@ -17,7 +17,7 @@ export class Details {
             this.fetchProduct(this.urlParse())
         }
     }
-    createLayout(id: string, data?: IProduct) {
+    private createLayout(id: string, data?: IProduct) {
         if (data) {
             const wrapper = document.createElement('div')
             const legend = this.createLegend(data)
@@ -31,11 +31,11 @@ export class Details {
             return productNutFound
         }
     }
-    urlParse() {
+    private urlParse() {
         const [path, id] = window.location.pathname.slice(1).split('/')
         return id
     }
-    async fetchProduct(id: string) {
+    private async fetchProduct(id: string) {
         try {
             const res = await fetch(`https://dummyjson.com/products/${id}`)
             const data: IProduct = await res.json()
@@ -51,7 +51,7 @@ export class Details {
             }
         }
     }
-    createLegend(product: IProduct) {
+    private createLegend(product: IProduct) {
         const legend = document.createElement('div')
         const storeLink = document.createElement('a')
         const category = document.createElement('a')
@@ -82,7 +82,7 @@ export class Details {
 
         return legend
     }
-    createDetails(product: IProduct) {
+    private createDetails(product: IProduct) {
         const details = document.createElement('div')
         const title = document.createElement('h2')
         const info = document.createElement('div')
@@ -101,7 +101,7 @@ export class Details {
         return details
         
     }
-    createSlider(product: IProduct) {
+    private createSlider(product: IProduct) {
         const slider = document.createElement('div')
         const previewsWrap = document.createElement('div')
         const sliderMainView = document.createElement('div')
@@ -113,7 +113,7 @@ export class Details {
         mainView.classList.add('slider__main-view')
         mainView.src = product.images[0]
         mainView.alt = product.title
-        if (product.id = 1) {
+        if (product.id === 1) {
             product.images = product.images.slice(1,4)
         }
         product.images.forEach((el, ind) => {
@@ -135,7 +135,7 @@ export class Details {
 
         return slider
     }
-    createProductDescr(product: IProduct) {
+    private createProductDescr(product: IProduct) {
         const wrap = document.createElement('div')
         const descrWrap = document.createElement('div')
         const descrTitle = document.createElement('h3')
@@ -198,7 +198,7 @@ export class Details {
 
         return wrap
     }
-    createProductAddTo(product: IProduct) {
+    private createProductAddTo(product: IProduct) {
         const wrap = document.createElement('div')
         const content = document.createElement('div')
         const price = document.createElement('h3')
@@ -259,5 +259,5 @@ export class Details {
 
         return wrap
     }
-    update() {}
+    public update() {}
 }
