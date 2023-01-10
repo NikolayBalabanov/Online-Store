@@ -27,31 +27,30 @@ enum fieldsNames {
 }
 
 export class Modal {
-    modal: HTMLDivElement | undefined
-    personName!: HTMLInputElement
-    personNameWrap!: HTMLDivElement
-    personPhone!: HTMLInputElement
-    personPhoneWrap!: HTMLDivElement
-    personAddress!: HTMLInputElement
-    personAddressWrap!: HTMLDivElement
-    personEmail!: HTMLInputElement
-    personEmailWrap!: HTMLDivElement
-    cardWrap!: HTMLDivElement
-    cardInfo!: HTMLDivElement
-    cardCVV!: HTMLInputElement
-    cardValid!: HTMLInputElement
-    cardNumber!: HTMLInputElement
+    private modal: HTMLDivElement | undefined
+    private personName!: HTMLInputElement
+    private personNameWrap!: HTMLDivElement
+    private personPhone!: HTMLInputElement
+    private personPhoneWrap!: HTMLDivElement
+    private personAddress!: HTMLInputElement
+    private personAddressWrap!: HTMLDivElement
+    private personEmail!: HTMLInputElement
+    private personEmailWrap!: HTMLDivElement
+    private cardWrap!: HTMLDivElement
+    private cardInfo!: HTMLDivElement
+    private cardCVV!: HTMLInputElement
+    private cardValid!: HTMLInputElement
+    private cardNumber!: HTMLInputElement
     constructor() {}
 
-    render() {
+    public render() {
         this.modal = this.createModal()
         document.body.append(this.modal)
     }
-    remove() {
+    public remove() {
         this.modal?.remove()
     }
-    validation() {}
-    createModal() {
+    private createModal() {
         const modal = document.createElement('div')
         const modalContent = document.createElement('div')
         const form = document.createElement('form')
@@ -371,7 +370,7 @@ export class Modal {
         })
         return modal
     }
-    personInputChecker(item: HTMLInputElement, container: HTMLDivElement, fildName: string, tag: string, error: string) {
+    private personInputChecker(item: HTMLInputElement, container: HTMLDivElement, fildName: string, tag: string, error: string) {
         if (this.isValidVal(item.value, fildName)) {
             const err = container.querySelector(`.${tag}`)
             err?.remove()
@@ -385,7 +384,7 @@ export class Modal {
             }
         }
     }
-    cardNumberChecker(item: HTMLInputElement, container: HTMLDivElement, target: HTMLDivElement) {
+    private cardNumberChecker(item: HTMLInputElement, container: HTMLDivElement, target: HTMLDivElement) {
         if (this.isValidVal(item.value, fieldsNames.number)) {
             const errs = container.querySelectorAll('.credit-card__error')
             errs.forEach(el => {
@@ -406,7 +405,7 @@ export class Modal {
             ), target.nextSibling) //cardInfo
         }
     }
-    cardValidChecker(item: HTMLInputElement, container: HTMLDivElement) {
+    private cardValidChecker(item: HTMLInputElement, container: HTMLDivElement) {
         if (this.isValidVal(item.value, fieldsNames.valid)) {
             const errs = container.querySelectorAll('.credit-card__error')
             errs.forEach(el => {
@@ -457,7 +456,7 @@ export class Modal {
             }
         }
     }
-    cardValidCVVChecker(item: HTMLInputElement, container: HTMLDivElement) {
+    private cardValidCVVChecker(item: HTMLInputElement, container: HTMLDivElement) {
         if (this.isValidVal(item.value, fieldsNames.cvv)) {
             const errs = container.querySelectorAll('.credit-card__error')
             errs.forEach(el => {
@@ -478,7 +477,7 @@ export class Modal {
             ))
         }
     }
-    isValidVal(str: string, field: string): boolean {
+    private isValidVal(str: string, field: string): boolean {
         switch(field) {
             case fieldsNames.name:
                 return (str.split(' ').length >= 2) && str.split(' ').every(el => el.length > 2)
@@ -504,13 +503,13 @@ export class Modal {
                 return false
         }
     }
-    createErrorNotice(notice: string, className: string) {
+    private createErrorNotice(notice: string, className: string) {
         const error = document.createElement('div')
         error.classList.add(`${className}`)
         error.textContent = notice
         return error
     }
-    valideteFields() {
+    private valideteFields() {
         // валидируем персон
         //name
         this.personInputChecker(this.personName, this.personNameWrap, fieldsNames.name, errorTag.person, errorMsgs.name)
@@ -529,7 +528,7 @@ export class Modal {
         const cardErrors = document.querySelectorAll(`.${errorTag.card}`)
         return personErrors.length === 0 && cardErrors.length === 0
     }
-    createSuccessModal() {
+    private createSuccessModal() {
         const success = document.createElement('div')
         const content = document.createElement('div')
         const text = document.createElement('h3')
