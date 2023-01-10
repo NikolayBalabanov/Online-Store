@@ -1,5 +1,5 @@
 import { notFoundPage } from "../components/NotFoundPage/404";
-import { appData, details, isModalOpen, main, modal, cart } from "../index";
+import { appData, details, isModalOpen, main, modal, cart, header } from "../index";
 
 type TCallBack = (event?: Event | undefined) => void
 
@@ -56,15 +56,18 @@ export function Router() {
         } else if (location === KnownRoutes.Cart) {
             if (main.mainContainer) main.mainContainer.innerHTML = ''
             cart.CartLayout(main.mainContainer)
+            header.update()
             if (isModalOpen.state) {
                 modal.render()
             }
         } else if (location.includes(KnownRoutes.ProductDetails)) {
             if (main.mainContainer) main.mainContainer.innerHTML = ''
             details.render(main.mainContainer)
+            header.update()
             modal.remove()
         } else {
             notFoundPage(main.mainContainer)
+            header.update()
             modal.remove()
         }
     };
