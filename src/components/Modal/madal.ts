@@ -182,6 +182,10 @@ export class Modal {
                     this.remove()
                     isModalOpen.state = false
                     window.history.pushState({}, '', '/');
+                    if (main.mainContainer) {
+                        main.mainContainer.innerHTML = ''
+                        main.createProductsLayout()
+                    }
                     main.update(appData)
                 }, 3000);
             }

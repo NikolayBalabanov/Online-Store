@@ -880,7 +880,8 @@ export class Main {
                             const isCategory = el.category.toLowerCase().includes(searchStr)
                             const isRating = (el.rating).toString().includes(searchStr)
                             const isDiscount = (el.discountPercentage).toString().includes(searchStr)
-                            return isBrand || isTitle || isDescr || isPrice || isCategory || isRating || isDiscount
+                            const isStock = (el.stock).toString().includes(searchStr)
+                            return isBrand || isTitle || isDescr || isPrice || isCategory || isRating || isDiscount || isStock
                         })
                     }
                     break
