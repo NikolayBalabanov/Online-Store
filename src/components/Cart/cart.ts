@@ -409,13 +409,13 @@ export class Cart {
                             cartArr.splice(index, 1)
                             localStorage.setItem('cart', JSON.stringify(cartArr))
 
-                            let cartPage = getCartPage()
-                            let maxPage = Math.ceil(cartArr.length/cartPage[0].limit)
-                            cartPage[0].page = maxPage > cartPage[0].page ? cartPage[0].page : maxPage
-                            if (maxPage === 0) cartPage[0].page = 1
-                            localStorage.setItem('page', JSON.stringify(cartPage)) 
                         }
                     }
+                    let cartPage = getCartPage()
+                    let maxPage = Math.ceil(cartArr.length/cartPage[0].limit)
+                    cartPage[0].page = maxPage > cartPage[0].page ? cartPage[0].page : maxPage
+                    if (maxPage === 0) cartPage[0].page = 1
+                    localStorage.setItem('page', JSON.stringify(cartPage)) 
                     // если 0 удаляем
                 this.CartLayout(main.mainContainer)
                 header.update()
