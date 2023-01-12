@@ -407,9 +407,9 @@ export class Cart {
                         elItem['count'] -=1              
                         if (elItem['count'] === 0) {
                             cartArr.splice(index, 1)
-                            localStorage.setItem('cart', JSON.stringify(cartArr))
-
+                            
                         }
+                        localStorage.setItem('cart', JSON.stringify(cartArr))
                     }
                     let cartPage = getCartPage()
                     let maxPage = Math.ceil(cartArr.length/cartPage[0].limit)
