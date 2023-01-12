@@ -412,6 +412,7 @@ export class Cart {
                             let cartPage = getCartPage()
                             let maxPage = Math.ceil(cartArr.length/cartPage[0].limit)
                             cartPage[0].page = maxPage > cartPage[0].page ? cartPage[0].page : maxPage
+                            if (maxPage === 0) cartPage[0].page = 1
                             localStorage.setItem('page', JSON.stringify(cartPage)) 
                         }
                     }
