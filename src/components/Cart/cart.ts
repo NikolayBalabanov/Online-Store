@@ -1,7 +1,13 @@
 import { appData, header, IProduct, main, modal } from "../../index"
 import { getCartArr } from "../../utils/getCartArr"
+import { getCartPage } from "../../utils/getCartPage"
 import { ICartItem, Main } from "../Main/main"
 import './cart.scss'
+
+export interface ICartPage {
+    limit: number
+    page: number
+}
 export class Cart {
     public cartContainer: HTMLDivElement | undefined
     public cartEmpty: HTMLDivElement | undefined
@@ -18,9 +24,16 @@ export class Cart {
         const cartWrapper = document.createElement('div')
         cartWrapper.classList.add('cart__wrapper')
         cartContainer.classList.add('cart__container')
+        // create page limit for pagination
+        let cartPage = getCartPage()
+        if (cartPage.length === 0) {
+            cartPage.push({ limit:5, page:1})
+            localStorage.setItem('page', JSON.stringify(cartPage))
+        }
         cartContainer.append(cartWrapper)
         cartWrapper.append(this.createProductsContainer(),
         this.createSummaryContainer())
+
              
         return cartContainer
     }
@@ -143,18 +156,20 @@ export class Cart {
         pageButtonRight.classList.add('limit_page_input', 'limit_button2')
         pageNumber.classList.add('page_number')
       
-        // pageItems - число товаров на странице
-        // pageNumber - число страниц товаров
+        let cartPage = getCartPage()
+        let cartArr = getCartArr()
+        let maxPage = Math.ceil(cartArr.length/cartPage[0].limit)
+ 
 
         titleName.textContent = 'Products In Cart'
         limitName.textContent = 'LIMIT: '
-        limitInput.placeholder = '1'
+        limitInput.value = cartPage[0].limit.toString()
         limitInput.min ='1'
         limitInput.type = 'number'
         pageName.textContent = ' PAGE: '
         pageButtonLeft.textContent = ' < '
         pageButtonRight.textContent = ' > '
-        pageNumber.textContent = ' 1 '
+        pageNumber.textContent = cartPage[0].page.toString()
       
         productControl.append(titleName, pageControl)
         pageControl.append(limitPages)
@@ -162,22 +177,83 @@ export class Cart {
         pageControl.append(pageNumberContainer)
         pageNumberContainer.append(pageName, pageButtonLeft, pageNumber, pageButtonRight)
 
+      
+        limitInput.addEventListener('input', () => { 
+            let itemsOnPage = Number(limitInput.value)
+            cartPage[0].limit = itemsOnPage
+            cartPage[0].page = 1
+            localStorage.setItem('page', JSON.stringify(cartPage))
+            let countPages = Math.ceil(cartArr.length/itemsOnPage)
+     
+            this.CartLayout(main.mainContainer)
+        })
+
+        pageButtonLeft.addEventListener('click', () => {
+         
+            if (cartPage.length > 0) {     
+                     
+                    if (cartPage[0].page > 1) {
+                        cartPage[0].page -= 1
+                        localStorage.setItem('page', JSON.stringify(cartPage))
+                        }
+
+                    this.CartLayout(main.mainContainer)
+                    return                      
+            }
+        })
+
+        pageButtonRight.addEventListener('click', () => {
+            maxPage = Math.ceil(cartArr.length/cartPage[0].limit)
+        
+            if (cartPage.length > 0) {
+                let totalPages = cartPage[0].page 
+                     
+                    if (cartPage[0].page < maxPage) {
+                        cartPage[0].page += 1
+                        localStorage.setItem('page', JSON.stringify(cartPage))
+                        }
+
+                    this.CartLayout(main.mainContainer)
+                    return
+                         
+            }
+         })
+
         return productControl
     }
-// - - -      тут заполнить items товары - - -
+// - - -      create items - - -
     public createProductsItems () {
-        let cartArr = getCartArr()
-        let counterCart = cartArr.length
         const productsItems = document.createElement('div')
         productsItems.classList.add('product__items_cart')
-        for (var i = 1; i <= counterCart; i++) {
-             
-        productsItems.append(this.createCartItem(i))
+        let cartArr = getCartArr()
+        let cartPage = getCartPage()
+        let counterItems = cartArr.length
+        let limitPage = cartPage[0].limit
+        let countPage = cartPage[0].page
 
+        if (Number(limitPage*countPage) <= counterItems) {
+            for (var i = 1; i <= limitPage; i++) {
+               
+                productsItems.append(this.createCartItem(Number(i + limitPage*(countPage-1))))
+            }
+                return productsItems
+        } else if (limitPage > counterItems){
+            console.log(2, Number(limitPage-counterItems))
+            for (var k = 1; k <= Number(counterItems); k++) {
+              
+                productsItems.append(this.createCartItem(Number(k + limitPage*(countPage-1))))
+            }
+                return productsItems
+        } else {
+            console.log(3, Number(limitPage-counterItems))
+            for (var k = 1; k <= (Number(counterItems-limitPage*(countPage-1))); k++) {
+                productsItems.append(this.createCartItem(Number(k + limitPage*(countPage-1) )))
+            }
+                return productsItems
         }
-        return productsItems
+        
     }
-// заполняем строку товара
+// create line product
     public createCartItem (idIt?:number) {
         let cartArr = getCartArr()
         let idProduct = cartArr[Number(idIt) - 1].id 
@@ -281,13 +357,11 @@ export class Cart {
 
         // Update info items from appData[Number(idp)] - testing -
         
-
         if (appData&&countItem) {
             stockControlTxt.textContent = `Stock: ${appData[Number(idp)].stock-countItem}` // - отнимаем N и итого---
             stockInfo.textContent = `${countItem}` //---------------------перемен кол-во из сторадж
             itemAmount.textContent = `€${(appData[Number(idp)].price)*countItem}.00` // умножаем на N сумма-----------
-            }
-        
+            }   
 
         itemControl.append(stockControl)
         stockControl.append(stockControlTxt)
@@ -307,14 +381,11 @@ export class Cart {
             if (cartArr.length > 0) {
                 let index =Number(idstorage)
                     let elItems = cartArr[index] //
-                    //console.log('elemet',index, 'raven', elItems)
-                    //console.log(cartArr)
-                    //console.log(elItems['count'])
-                    
+            
                     if (elItems['count']) {
                         elItems['count'] +=1
                         localStorage.setItem('cart', JSON.stringify(cartArr))
-                     //   this.UpdateCart()
+            
                     }
 
                     // не может быть больше стокового кол-ва
