@@ -400,26 +400,25 @@ export class Cart {
              
         })
         stockButtonMinus.addEventListener('click', () => {
-                
-
-            console.log('button-','idProduct',idp, 'idStorage', idstorage, 'CountItem', countItem)
             if (cartArr.length > 0) {
                 let index =Number(idstorage)
-               
                     let elItem = cartArr[index]
                     if (elItem['count']) {
                         elItem['count'] -=1              
                         if (elItem['count'] === 0) {
-                        cartArr.splice(index, 1)}
-                        localStorage.setItem('cart', JSON.stringify(cartArr))
+                            cartArr.splice(index, 1)
+                            localStorage.setItem('cart', JSON.stringify(cartArr))
 
-                        // update cart()
+                            let cartPage = getCartPage()
+                            let maxPage = Math.ceil(cartArr.length/cartPage[0].limit)
+                            cartPage[0].page = maxPage > cartPage[0].page ? cartPage[0].page : maxPage
+                            localStorage.setItem('page', JSON.stringify(cartPage)) 
                         }
+                    }
                     // если 0 удаляем
-                    this.CartLayout(main.mainContainer)
-                    header.update()
-                    return
-                
+                this.CartLayout(main.mainContainer)
+                header.update()
+                return
             }
             
              
