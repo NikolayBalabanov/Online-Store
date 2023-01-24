@@ -148,7 +148,7 @@ export class Cart {
                         ? promoRSbtn.classList.add('is-hidden')
                         : promoEPMbtn.classList.add('is-hidden')
                 })
-                resulPriceSummTxt.textContent= `Total:  €${cartPrice}`
+                resulPriceSummTxt.textContent= `Total:  €${cartPrice.toFixed(2)}`
             } else {
                 resultPriceSumm.classList.add('is-hidden')
                 applyCodes.classList.add('is-hidden')
@@ -370,9 +370,7 @@ export class Cart {
         itemOther.classList.add('item_other')
         itemRating.classList.add('item_rating')
         itemDiscount.classList.add('item_discount')
-        aHref.href= `/product-details/${Number(idp)+1}` // ! Patch for Page ProductDetail
-
-        // Update info items from appData[Number(idp) - testing -
+        aHref.href= `/product-details/${Number(idp)+1}`
         if (appData) {
         itemImage.src = appData[Number(idp)].thumbnail 
         itemName.textContent = appData[Number(idp)].title
@@ -442,17 +440,17 @@ export class Cart {
         // - controls
         let cartArr = getCartArr()
         stockButtonPlus.addEventListener('click', () => {
-            if (cartArr.length > 0) {
+            if (cartArr.length > 0 && appData) {
                 let index =Number(idstorage)
-                    let elItems = cartArr[index] //
+                let elItems = cartArr[index] //
             
-                    if (elItems['count']) {
-                        elItems['count'] +=1
-                        localStorage.setItem('cart', JSON.stringify(cartArr))
-                    }
+                if (elItems['count'] < appData[Number(idp)].stock) {
+                    elItems['count'] +=1
+                    localStorage.setItem('cart', JSON.stringify(cartArr))
                     this.CartLayout(main.mainContainer)
                     header.update()
                     return
+                }
             }
         })
         stockButtonMinus.addEventListener('click', () => {
@@ -485,15 +483,15 @@ export class Cart {
     //-----------------------------------------------section
     public CartLayout(container: HTMLElement | undefined, newData?: IProduct[]) {
        
-            if (container) {
-                container.innerHTML = ''
-                let cartArr = getCartArr()
-                if (cartArr.length > 0){
-                container.append(this.createCartContainer())
-                } else {
-                    container.append(this.createCartEmpty()) 
-                }
+        if (container) {
+            container.innerHTML = ''
+            let cartArr = getCartArr()
+            if (cartArr.length > 0){
+            container.append(this.createCartContainer())
+            } else {
+                container.append(this.createCartEmpty()) 
             }
+        }
         return this.CartLayout   
     }
 
