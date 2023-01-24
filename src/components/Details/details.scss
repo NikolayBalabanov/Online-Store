@@ -168,7 +168,15 @@
         border: 2px solid orange;
         border-radius: 0.3rem;
         background: #9a3535;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
         cursor: pointer;
+
+        &:focus-visible,
+        &:hover,
+        &:active {
+            background-color: orange;
+            color: black;
+        }
 
         @media (max-width: 900px) {
             padding: 5px 0;
