@@ -82,14 +82,17 @@
     width: 40px;
 }
 
-.limit_button1 {
-    cursor: pointer;
-    padding: 0.3rem;
-}
-
+.limit_button1,
 .limit_button2 {
     cursor: pointer;
     padding: 0.3rem;
+    transition: background-color 0.3s ease-in-out;
+
+    &:focus-visible,
+    &:hover,
+    &:active {
+        background-color: white;
+    }
 }
 
 .stock_button {
@@ -100,6 +103,13 @@
     color: orange;
     padding: 0.5rem;
     font-size: 1rem;
+    transition: background-color 0.3s ease-in-out;
+
+    &:focus-visible,
+    &:hover,
+    &:active {
+        background-color: white;
+    }
 }
 
 .item__control {
@@ -231,18 +241,46 @@
     margin: 4%;
 }
 
-.result_price {
-    display: none;
+.old_price {
+    text-decoration: line-through;
 }
 .res_promo {
-    display: none;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: calc(.2rem + 1vw);
+    color: orange;
+    text-align: center;
+
+    &.is-hidden {
+        display: none;
+    }    
+}
+.res_btn {
+    padding: 0.25rem;
+    font-size: 1rem;
+    color: orange;
+    border: 1px solid orange;
+    border-radius: 0.5rem;
+    background: #373636;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border 0.3s ease-in-out;
+
+    &:focus-visible,
+    &:hover,
+    &:active {
+        color: black;
+        border: 1px solid black;
+        background-color: white;
+    }
 }
 
 .old_price {
    /* text-decoration: line-through;*/
 }
 .apply_codes {
-    display: none;
     width: 80%;
     margin: 5% auto;
     border: 1px solid orange;
@@ -285,15 +323,6 @@
     outline: none;
     font-size: 100%;
 }
-.res_promo {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-size: calc(.2rem + 1vw);
-    color: orange;
-    text-align: center;
- 
-}
 .test_promo {
     display: block;
     margin: 3% auto;
@@ -311,10 +340,14 @@
     cursor: pointer;
     width: 50%;
     margin: 1rem auto 1rem;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 
-    // @media (max-width: 768px) {
-    //     width: 100%;
-    // }
+    &:focus-visible,
+    &:hover,
+    &:active {
+        background-color: orange;
+        color: black;
+    }
 }
 
 .cart__empty {

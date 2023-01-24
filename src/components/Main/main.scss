@@ -98,6 +98,7 @@
         padding-right: 2%;
         font-size: 120%;
         cursor: pointer;
+        
     }
 }
 
@@ -186,8 +187,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
         gap: 1rem;
-        // display: flex;
-        // flex-wrap: wrap;
+
         &.cards--big {
             grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
         }
@@ -316,14 +316,9 @@
     display: grid;
     grid-template-columns: 100px 1fr;
     grid-template-rows: 100px auto;
-    // width: 14.6%;
-    // padding-top: 12%;
-    // margin: 1%;
     border: 1px solid orange;
     border-radius: 0.5rem;
     overflow: hidden;
-    // display: flex;
-    // flex-direction: column;
 
     &__wrap {
         width: 100%;
@@ -451,8 +446,6 @@
 .is-hidden {
     display: none;
 }
-
-
 
 .burger {
     display: none;
