@@ -1,7 +1,7 @@
 import { appData, header, IProduct, main, modal } from "../../index"
 import { getCartArr } from "../../utils/getCartArr"
 import { getCartPage } from "../../utils/getCartPage"
-import { ICartItem, Main } from "../Main/main"
+import { getPromoArr } from "../../utils/getPromoArr"
 import './cart.scss'
 
 export interface ICartPage {
@@ -32,8 +32,8 @@ export class Cart {
         }
         cartContainer.append(cartWrapper)
         cartWrapper.append(this.createProductsContainer(),
-        this.createSummaryContainer())
-
+            this.createSummaryContainer()
+        )
              
         return cartContainer
     }
@@ -48,6 +48,55 @@ export class Cart {
     }
     
     public createSummaryContainer() {
+        function createPromoDropItem(str: string) {
+            const appliedPromo = document.createElement('div')
+            const appliedPromoTxt = document.createElement('span')
+            const appliedPromoTxtBtn = document.createElement('button')
+            appliedPromo.classList.add('applied_promo', `applied_${str}`)
+            appliedPromoTxt.classList.add('applied_text')
+            appliedPromoTxt.textContent = str === 'rs' ? 'Rolling Scopes School 10%' : 'EPAM Systems - 10%'
+            appliedPromoTxtBtn.textContent = 'DROP'
+            appliedPromoTxtBtn.classList.add('res_btn', 'apply_drop')
+            appliedPromo.append(appliedPromoTxt, appliedPromoTxtBtn)
+
+            appliedPromoTxtBtn.addEventListener('click', () => {
+                const promoResBtn = document.querySelector(`.res_${str} .res_btn`)
+                if (promoResBtn) promoResBtn.classList.remove('is-hidden')
+                appliedPromo.remove()
+                if (appliedPromoWrap.childNodes.length === 0) applyCodes.classList.add('is-hidden')
+                if (promoState.includes(str)) {
+                    promoState = promoState.filter(el => el !== str)
+                }
+                localStorage.setItem('promo', JSON.stringify(promoState))
+                promoChange()
+            })
+
+            return appliedPromo
+        }
+        function createPromoAddItem(str: string) {
+            const promoRes = document.createElement('div')
+            const promoResTxt = document.createElement('span')
+            const promoResBtn = document.createElement('button')
+            promoRes.classList.add('res_promo', `res_${str}`, 'is-hidden')
+            promoResTxt.classList.add('res_promo')
+            promoResTxt.textContent = str === 'rs' ? 'Rolling Scopes School 10%' : 'EPAM Systems - 10%'
+            promoResBtn.textContent = 'ADD'
+            promoResBtn.classList.add('res_btn') // условно скрывается если есть в LS
+            promoRes.append(promoResTxt, promoResBtn)
+            promoResBtn.addEventListener('click', () => {
+                promoResBtn.classList.add('is-hidden')
+                applyCodes.classList.remove('is-hidden')
+                appliedPromoWrap.append(createPromoDropItem(str))
+                if (!promoState.includes(str)) {
+                    promoState.push(str)
+                    localStorage.setItem('promo', JSON.stringify(promoState))
+                }
+                promoChange()
+            })
+
+            return [promoRes, promoResBtn]
+        }
+        let promoState = getPromoArr()
         const summaryContainer = document.createElement('div')
         const summaryName = document.createElement('h2')
         const totalPrice = document.createElement('div')
@@ -58,16 +107,13 @@ export class Cart {
         const resulPriceSummTxt = document.createElement('span')
         const applyCodes = document.createElement('div')
         const applyCodesTxt = document.createElement('h3')
-        const appliedPromo = document.createElement('div')
-        const appliedPromoTxt = document.createElement('span')
-        const applyDrop = document.createElement('span')
+        const appliedPromoWrap = document.createElement('div')
         const promoCode = document.createElement('div')
         const promoCodeInput = document.createElement('input')
-        const promoRes = document.createElement('div')
-        const promoResTxt = document.createElement('span')
         const promoTestTxt = document.createElement('span')
         const buttonCartBuy = document.createElement('button')
-        
+        const [promoRS, promoRSbtn] = createPromoAddItem('rs')
+        const [promoEPM, promoEPMbtn] = createPromoAddItem('epm')
 
         summaryName.classList.add('summary')
         summaryName.textContent = 'Summary'
@@ -79,31 +125,46 @@ export class Cart {
             totalPriceTxt.textContent = `Products:  ${cnt}` 
         } else {        
             totalPriceTxt.textContent = `Products:  ${0}`
-         } 
-        totalPriceSumm.classList.add('total_price', 'old_price')
+        } 
+        totalPriceSumm.classList.add('total_price')
         totalPriceSummTxt.classList.add('total_price')
-        const total = cartArr.reduce((acc, cur) => acc + cur.price * cur.count, 0).toString()
-        totalPriceSummTxt.textContent = `Total:  €${total}.00` //--------------
+        const total = cartArr.reduce((acc, cur) => acc + cur.price * cur.count, 0)
+        totalPriceSummTxt.textContent = `Total:  €${total.toString()}.00` //--------------
         resultPriceSumm.classList.add('result_price', 'total_price')
         resulPriceSummTxt.classList.add('result_price', 'total_price')
-        resulPriceSummTxt.textContent= `Total:  €${'000.00'}` //--------------
-        applyCodes.classList.add('apply_codes')
+        applyCodes.classList.add('apply_codes', 'is-hidden') // LS
+        promoChange()
+        function promoChange() {
+            if (promoState.length > 0) {
+                let cartPrice = total
+                resultPriceSumm.classList.remove('is-hidden')
+                applyCodes.classList.remove('is-hidden')
+                totalPriceSumm.classList.add('old_price')
+                appliedPromoWrap.innerHTML = ''
+                promoState.forEach(el =>  {
+                    appliedPromoWrap.append(createPromoDropItem(el))
+                    cartPrice *= 0.9
+                    el === 'rs' 
+                        ? promoRSbtn.classList.add('is-hidden')
+                        : promoEPMbtn.classList.add('is-hidden')
+                })
+                resulPriceSummTxt.textContent= `Total:  €${cartPrice}`
+            } else {
+                resultPriceSumm.classList.add('is-hidden')
+                applyCodes.classList.add('is-hidden')
+                totalPriceSumm.classList.remove('old_price')
+            }
+        }
+        
         applyCodesTxt.classList.add('apply_txt')
         applyCodesTxt.textContent = 'Applied codes'
-        appliedPromo.classList.add('applied_promo')
-        appliedPromoTxt.classList.add ('applied_promo')
-        appliedPromoTxt.textContent = `Rolling Scopes School ${10}%` //------------
-        applyDrop.classList.add ('apply_drop')
-        applyDrop.textContent = 'DROP'
         promoCode.classList.add('promo_code')
         promoCodeInput.classList.add('input_promo', 'promo_valid')
         promoCodeInput.placeholder = 'Enter promo code'
         promoCodeInput.type = 'search'
-        promoRes.classList.add('res_promo')
-        promoResTxt.classList.add('res_promo')
-        promoResTxt.textContent = `Rolling Scopes School ${10}%` //------------
+        
         promoTestTxt.classList.add('test_promo')
-        promoTestTxt.textContent = `Promo for test: 'RS'`
+        promoTestTxt.textContent = `Promo for test: 'RS', 'EPM'`
         buttonCartBuy.classList.add('button_buy')
         buttonCartBuy.textContent ='BUY NOW'
           
@@ -117,21 +178,32 @@ export class Cart {
         resultPriceSumm.append(resulPriceSummTxt)
         summaryContainer.append(applyCodes)
         applyCodes.append(applyCodesTxt)
-        applyCodes.append(appliedPromo)
-        appliedPromo.append(appliedPromoTxt)
-        appliedPromo.append(applyDrop)
+        applyCodes.append(appliedPromoWrap)
         summaryContainer.append(promoCode)
         promoCode.append(promoCodeInput)
-        summaryContainer.append(promoRes)
-        promoRes.append(promoResTxt)
+        summaryContainer.append(promoRS, promoEPM)
+        
         summaryContainer.append(promoTestTxt)
         summaryContainer.append(buttonCartBuy)
         buttonCartBuy.addEventListener('click', () => {
             modal.render()
         })
+        promoCodeInput.addEventListener('input', () => {
+            switch (promoCodeInput.value.trim().toLowerCase()) {
+                case 'rs':
+                    promoRS.classList.remove('is-hidden')
+                    break
+                case 'epm':
+                    promoEPM.classList.remove('is-hidden')
+                    break
+                default:
+                    promoRS.classList.add('is-hidden')
+                    promoEPM.classList.add('is-hidden')
+                    break
+            }
+        })
 
         return summaryContainer
-
     }
 
     public createProductControl() {
@@ -233,19 +305,15 @@ export class Cart {
 
         if (Number(limitPage*countPage) <= counterItems) {
             for (var i = 1; i <= limitPage; i++) {
-               
                 productsItems.append(this.createCartItem(Number(i + limitPage*(countPage-1))))
             }
                 return productsItems
         } else if (limitPage > counterItems){
-            console.log(2, Number(limitPage-counterItems))
             for (var k = 1; k <= Number(counterItems); k++) {
-              
                 productsItems.append(this.createCartItem(Number(k + limitPage*(countPage-1))))
             }
                 return productsItems
         } else {
-            console.log(3, Number(limitPage-counterItems))
             for (var k = 1; k <= (Number(counterItems-limitPage*(countPage-1))); k++) {
                 productsItems.append(this.createCartItem(Number(k + limitPage*(countPage-1) )))
             }
@@ -268,7 +336,6 @@ export class Cart {
 
         cartItem.append(item_i)
         item_i.append(itemNumber)
-        console.log('idStor', idProduct )
         cartItem.append(this.createItemInfo(idProduct-1), 
         this.createItemControl((idProduct-1),(Number(idIt)-1),countItem)
         )
@@ -375,9 +442,6 @@ export class Cart {
         // - controls
         let cartArr = getCartArr()
         stockButtonPlus.addEventListener('click', () => {
-                
-
-            console.log('button+','idProduct',idp, 'idStorage', idstorage, 'CountItem', countItem)
             if (cartArr.length > 0) {
                 let index =Number(idstorage)
                     let elItems = cartArr[index] //
@@ -385,19 +449,11 @@ export class Cart {
                     if (elItems['count']) {
                         elItems['count'] +=1
                         localStorage.setItem('cart', JSON.stringify(cartArr))
-            
                     }
-
-                    // не может быть больше стокового кол-ва
-                    // обновляем
                     this.CartLayout(main.mainContainer)
                     header.update()
                     return
-              //  }
-                
             }
-            
-             
         })
         stockButtonMinus.addEventListener('click', () => {
             if (cartArr.length > 0) {
@@ -424,9 +480,7 @@ export class Cart {
             
              
         })
-
         return itemControl
-
     }
     //-----------------------------------------------section
     public CartLayout(container: HTMLElement | undefined, newData?: IProduct[]) {
@@ -437,9 +491,8 @@ export class Cart {
                 if (cartArr.length > 0){
                 container.append(this.createCartContainer())
                 } else {
-                    console.log('cartEmpty')
                     container.append(this.createCartEmpty()) 
-                    }
+                }
             }
         return this.CartLayout   
     }
