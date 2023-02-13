@@ -1,0 +1,239 @@
+.modal {
+    position: fixed;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(13,13,13,.8);
+
+    &__content {
+        position: absolute;
+        z-index: 99;
+        padding: 1%;
+        width: 40%;
+        border: 1px solid orange;
+        border-radius: 0.5rem;
+        background-color: #181a1c;
+
+        @media (max-width: 900px) {
+            width: 90%;
+        }
+    }
+
+    &__form {
+        margin: auto;
+        display: block;
+        width: 100%;
+        height: -moz-fit-content;
+        height: fit-content;
+    }
+
+    &__person {
+        width: 90%;
+        margin: auto;
+    }
+
+    &__credit-card {
+        margin-top: 1%;
+        width: 100%;
+    }
+
+    &__confirm {
+        margin: 4% auto;
+        padding: 1%;
+        display: block;
+        width: 40%;
+        font-size: 90%;
+        background-color: #3f1010;
+        border: 1px solid orange;
+        border-radius: 0.5rem;
+        cursor: pointer;
+    }
+
+    &__title {
+        margin: 0 auto;
+        font-size: 90%;
+        text-align: center; 
+
+        &:last-of-type {
+            margin-bottom: 2%;
+        }
+    }
+}
+
+.person {
+
+    &__input-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    &__input {
+        margin: 2% auto;
+        padding: 0.4rem;
+        width: 100%;
+        font-size: 90%;
+        color: orange;
+        text-align: center;
+        border: 1px solid orange;
+        border-radius: 2rem;
+        background-color: #181a1c;
+        outline: none;
+    }
+
+    &__error {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: red; 
+
+        @media (max-width: 768px) {
+            font-size: 90%;
+        }
+    }
+}
+
+.credit-card {
+    &__info {
+        margin: 0 auto;
+        padding: 15px 0px;
+        width: 55%;
+        height: 7rem;
+        border: 1px solid orange;
+        border-radius: 0.5rem;
+        background: rgb(0,9,36);
+        background: linear-gradient(90deg,rgb(0,9,36) 6%,rgb(9,9,121) 34%,rgb(0,212,255) 100%);
+
+
+        @media (max-width: 768px) {
+            width: 90%;
+        }
+    }
+
+    &__input-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &:not(:first) {
+            font-size: 50%;
+        }
+
+        @media (max-width: 768px) {
+            font-size: 100%;
+        }
+    }
+
+    &__text {
+        font-size: 50%; 
+
+        @media (max-width: 768px) {
+            font-size: 70%;
+        }
+    }
+
+    &__top {
+        margin-bottom: 32px;
+    }
+
+    &__bottom {
+        margin: 0 auto;
+        margin-bottom: 5%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 90%;
+    }
+
+    &__logo {
+        padding: 0.3rem;
+        width: 10%;
+        border-radius: 0.3rem;
+        background-color: #fff;
+    }
+
+    &__input {
+        margin-left: 2%;
+        width: 80%;
+        text-align: center;
+        font-size: 90%;
+        font-weight: 700;
+        color: #000;
+        border: 1px solid orange;
+        border-radius: 0.3rem;
+        background: rgb(233,233,202);
+        outline: none;
+
+        @media (max-width: 768px) {
+            font-size: 120%;
+        }
+    }
+
+    &__input-small {
+        width: 60%;
+        height: 1rem;
+        font-weight: 700;
+        font-size: 50%;
+    }
+
+    &__error {
+        padding-top: 1%;
+        color: red;
+        text-align: center;
+
+        @media (max-width: 768px) {
+            font-size: 90%;
+        }
+    }
+}
+
+.success {
+    position: fixed;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(239, 148, 0, 0.8);
+    animation: show 0.5s linear ease-in-out;
+
+    &__content {
+        position: absolute;
+        z-index: 100;
+        padding: 3%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40%;
+        border: 1px solid #181a1c;
+        border-radius: 0.5rem;
+        background-color: rgb(1, 198, 1);
+    }
+
+    &__text { 
+        text-align: center;
+        font-weight: 500;
+        font-size: 100%;
+        color: #000;
+    }
+}
+
+
+@keyframes show {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

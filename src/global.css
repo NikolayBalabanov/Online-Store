@@ -1,0 +1,65 @@
+:root {
+    --color-black: #181a1c;
+    --color-orange: orange;
+    --color-wheat: wheat;
+}
+
+html {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    min-width: 320px;
+    background-image: url(./assets/images/bg.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+  
+*,
+*::before,
+*::after {
+    -webkit-box-sizing: inherit;
+    box-sizing: inherit;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #181a1c;
+    border-radius: 20px;
+    border: 2px solid orange;
+}
+
+::-webkit-scrollbar-track {
+    background: orange;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 16px;
+    color: orange;
+    font-family: Philosopher,sans-serif;
+    word-wrap: break-word;
+}
+
+.container {
+    margin: 0 auto;
+    padding: 0px 15px;
+    max-width: 1370px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.list-reset {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
